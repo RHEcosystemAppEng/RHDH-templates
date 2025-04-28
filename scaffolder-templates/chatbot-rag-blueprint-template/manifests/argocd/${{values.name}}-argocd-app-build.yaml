@@ -12,10 +12,6 @@ spec:
     repoURL: ${{values.repoURL}}
     targetRevision: HEAD
     path: ./helm/rag-ui
-    helm:
-      parameters:
-      - name: llm-service.hf_token
-        value: ${{ values.token }}
   destination:
     server: https://kubernetes.default.svc
     namespace: ${{ values.name }}-dev
