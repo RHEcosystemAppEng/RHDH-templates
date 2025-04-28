@@ -1,15 +1,17 @@
 {{- $root := . }}
 {{- range $key, $model := $.Values.global.models }}
+{{- if and $model.enabled (eq $model.llamaStack.modelUrl.envValue "auto") }}
 ---
 apiVersion: serving.kserve.io/v1beta1
 kind: InferenceService
 metadata:
-  name: {{ $model.inferenceService.name }}
+  name: {{ $key }}
   annotations:
-    openshift.io/display-name: {{ $model.inferenceService.name }}
+    openshift.io/display-name: {{ $key }}
     serving.knative.openshift.io/enablePassthrough: "true"
     sidecar.istio.io/inject: "true"
     sidecar.istio.io/rewriteAppHTTPProbers: "true"
+    storage.kserve.io/readonly: "false"
   labels:
     opendatahub.io/dashboard: "true"
     networking.knative.dev/visibility: "cluster-local"
@@ -35,8 +37,10 @@ spec:
           nvidia.com/gpu: "1"
       {{- end }}
       runtime: {{ $root.Values.servingRuntime.name }}
-      storageUri: {{ $model.inferenceService.storageUri }}
+      storageUri: pvc://{{ $key }}/
       args:
+      - --model
+      - {{ $model.id }}
       - --served-model-name
       - {{ $model.id }}
       {{- with $model.inferenceService.args }}
@@ -50,4 +54,5 @@ spec:
     tolerations:
       {{- toYaml . | nindent 4 }}
     {{- end }}
+{{- end }}
 {{- end }}

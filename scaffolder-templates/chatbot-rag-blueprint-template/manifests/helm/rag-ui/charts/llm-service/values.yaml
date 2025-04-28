@@ -1,15 +1,14 @@
-acceleratorProfile:
-  enabled: false
-  name: nvidia-gpu
-  displayName: NVIDIA GPU
-  identifier: nvidia.com/gpu
-
 servingRuntime:
   name: vllm-serving-runtime
   knativeTimeout: 60m
   env:
   - name: HOME
     value: /vllm
+  - name: HF_TOKEN
+    valueFrom:
+      secretKeyRef:
+        key: HF_TOKEN
+        name: huggingface-secret
   volumeMounts:
   - mountPath: /dev/shm
     name: shm

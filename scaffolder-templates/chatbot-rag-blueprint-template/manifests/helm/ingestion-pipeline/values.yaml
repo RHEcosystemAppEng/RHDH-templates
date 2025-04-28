@@ -1,18 +1,6 @@
-namespace: llama-stack-rag-2
-
-minio:
-  endpoint: http://minio.<your-namespace>.svc.cluster.local:9000
-  accessKey: "minio_rag_user"
-  secretKey: "minio_rag_password"
-  bucket: "llama"
-
-llamastack:
-  baseUrl: http://llamastack.<your-namespace>.svc.cluster.local:8321
-
 notebook:
   image: image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/s2i-generic-data-science-notebook:2024.2
-  repo: "https://github.com/tsisodia10/pipeline.git"
-
+  repo: "https://github.com/tsisodia10/ingestion-pipeline.git"
 
 kfp:
   sdkImage: "quay.io/kubeflow/pipelines-sdk:2.1.0"

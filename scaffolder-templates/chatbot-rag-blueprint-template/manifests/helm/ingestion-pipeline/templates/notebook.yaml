@@ -30,11 +30,11 @@ spec:
           image: image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/s2i-generic-data-science-notebook:2024.2
           resources:
             limits:
-              cpu: "2"
-              memory: 8Gi
+              cpu: "1"
+              memory: 2Gi
             requests:
               cpu: "1"
-              memory: 8Gi
+              memory: 2Gi
           ports:
             - containerPort: 8888
               name: notebook-port
@@ -60,12 +60,17 @@ spec:
                 secretKeyRef:
                   name: rag-pipeline-secrets
                   key: LLAMASTACK_BASE_URL
+            - name: DS_PIPELINE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: rag-pipeline-secrets
+                  key: DS_PIPELINE_URL
             - name: NOTEBOOK_ARGS
               value: |-
                 --ServerApp.port=8888
                 --ServerApp.token=''
                 --ServerApp.password=''
-                --ServerApp.base_url=/notebook/{{ .Values.namespace }}/rag-pipeline-notebook
+                --ServerApp.base_url=/notebook/{{ .Release.Namespace }}/rag-pipeline-notebook
                 --ServerApp.quit_button=False
                 --ServerApp.tornado_settings={"user":"user1","hub_host":"","hub_prefix":"/projects/{{ .Values.namespace }}"}
             - name: JUPYTER_IMAGE

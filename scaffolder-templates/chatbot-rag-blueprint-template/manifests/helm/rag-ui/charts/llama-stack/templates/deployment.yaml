@@ -45,10 +45,16 @@ spec:
           env:
             {{- toYaml .Values.env | nindent 12 }}
             {{- range $key, $model := $.Values.global.models }}
-            - name: {{ $model.llamaStack.modelIdEnvVar }}
+            {{- if $model.enabled }}
+            - name: {{ $model.llamaStack.modelIdEnvName }}
               value: {{ $model.id }}
-            - name: {{ $model.llamaStack.modelUrlEnvVar }}
-              value: https://{{ $model.inferenceService.name }}.{{ $root.Release.Namespace }}.svc.cluster.local/v1
+            - name: {{ $model.llamaStack.modelUrl.envName }}
+            {{- if eq $model.llamaStack.modelUrl.envValue "auto" }}
+              value: https://{{ $key }}.{{ $root.Release.Namespace }}.svc.cluster.local/v1
+            {{- else }}
+              value: {{ $model.llamaStack.modelUrl.envValue }}
+            {{- end }}
+            {{- end }}
             {{- end }}
           ports:
             - name: http
