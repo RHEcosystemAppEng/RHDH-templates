@@ -51,9 +51,6 @@ namespace:
 
 .PHONY: secrets
 secrets:
-	@echo "Creating Hugging Face secret..."
-	oc create secret -n $(NAMESPACE) generic huggingface-secret --from-literal=HF_TOKEN="$(HF_TOKEN)" --dry-run=client -o yaml | oc apply -f -
-
 	@echo "Creating minio secret"
 	oc create secret -n $(NAMESPACE) generic minio \
        --from-literal=username=$(MINIO_USER) \
@@ -62,7 +59,6 @@ secrets:
        --from-literal=port=9000 || echo "Minio secret not created"
 
 	@echo "Annotating secrets..."
-	oc annotate secret huggingface-secret -n $(NAMESPACE) meta.helm.sh/release-name=$(RELEASE_NAME) meta.helm.sh/release-namespace=$(NAMESPACE) --overwrite
 	oc annotate secret minio -n $(NAMESPACE) meta.helm.sh/release-name=rag meta.helm.sh/release-namespace=$(NAMESPACE)
 
 .PHONY: pg-vector
@@ -109,6 +105,7 @@ install-%: namespace secrets
 
 	@echo "Deploying Helm chart $(CHART_PATH) (services) release $(RELEASE_NAME) in namespace $(NAMESPACE)..."
 	helm upgrade --install $(RELEASE_NAME) $(CHART_PATH) -n $(NAMESPACE) --values rag-ui/values-$*.yaml \
+	--set llm-service.hf_token=$(HF_TOKEN) \
 	--set pgvector.secret.user=$(POSTGRES_USER) \
 	--set pgvector.secret.password=$(POSTGRES_PASSWORD) \
 	--set pgvector.secret.dbname=$(POSTGRES_DBNAME) \
@@ -117,6 +114,7 @@ install-%: namespace secrets
 
 	@echo "Deploying Helm chart $(CHART_PATH) (llamastack) as release $(RELEASE_NAME) in namespace $(NAMESPACE)..."
 	helm upgrade --install $(RELEASE_NAME) $(CHART_PATH) -n $(NAMESPACE) --values rag-ui/values-$*.yaml \
+	--set llm-service.hf_token=$(HF_TOKEN) \
 	--set pgvector.secret.user=$(POSTGRES_USER) \
 	--set pgvector.secret.password=$(POSTGRES_PASSWORD) \
 	--set pgvector.secret.dbname=$(POSTGRES_DBNAME) \
@@ -163,9 +161,6 @@ uninstall-helm-release:
 
 .PHONY: remove-secrets
 remove-secrets:
-
-	@echo "Removing Hugging Face secret..."
-	oc delete secret -n $(NAMESPACE) huggingface-secret || echo "Secret not found or already removed."
 
 	@echo "Removing minio secret"
 	oc delete secret -n $(NAMESPACE) minio || echo "Secret not found or already removed."
