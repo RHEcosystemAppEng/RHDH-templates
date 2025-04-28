@@ -158,7 +158,7 @@ spec:
           owner: ${{ parameters.owner }}
           #repoUrl: ${{ parameters.repoUrl }}
           model: ${{ parameters.model }}
-          token: ${{ secret.token }}
+          token: ${{ secrets.token }}
           enbableGPUSupport: ${{ parameters.enbableGPUSupport }}
           createGPU: ${{ parameters.createGPU }}
           defaultBranch: ${{ parameters.branch }}    
