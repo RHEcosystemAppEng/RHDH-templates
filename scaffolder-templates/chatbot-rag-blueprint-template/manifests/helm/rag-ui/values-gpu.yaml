@@ -1,17 +1,17 @@
 global:
   models:
     llama-3-2-3b-instruct:
-      id: meta-llama/Llama-3.2-3B-Instruct
+      id: ${{ values.model }}
       enabled: false
       inferenceService:
         args:
-        - --enable-auto-tool-choice
-        - --chat-template
-        - /vllm-workspace/examples/tool_chat_template_llama3.2_json.jinja
-        - --tool-call-parser
-        - llama3_json
-        - --max-model-len
-        - "30544"
+          - --enable-auto-tool-choice
+          - --chat-template
+          - /vllm-workspace/examples/tool_chat_template_llama3.2_json.jinja
+          - --tool-call-parser
+          - llama3_json
+          - --max-model-len
+          - "30544"
       llamaStack:
         modelIdEnvName: LLAMA_INSTRUCT3B_MODEL
         modelUrl:
@@ -22,8 +22,8 @@ global:
       enabled: false
       inferenceService:
         args:
-        - --max-model-len
-        - "14336"
+          - --max-model-len
+          - "14336"
       llamaStack:
         modelIdEnvName: LLAMA_GUARD8B_MODEL
         modelUrl:
@@ -35,13 +35,13 @@ global:
       enabled: false
       inferenceService:
         args:
-        - --enable-auto-tool-choice
-        - --chat-template
-        - /vllm-workspace/examples/tool_chat_template_llama3.2_json.jinja
-        - --tool-call-parser
-        - llama3_json
-        - --max-model-len
-        - "30544"
+          - --enable-auto-tool-choice
+          - --chat-template
+          - /vllm-workspace/examples/tool_chat_template_llama3.2_json.jinja
+          - --tool-call-parser
+          - llama3_json
+          - --max-model-len
+          - "30544"
       llamaStack:
         modelIdEnvName: LLAMA_INSTRUCT1B_MODEL
         modelUrl:
@@ -52,8 +52,8 @@ global:
       enabled: false
       inferenceService:
         args:
-        - --max-model-len
-        - "14336"
+          - --max-model-len
+          - "14336"
       llamaStack:
         modelIdEnvName: LLAMA_GUARD1B_MODEL
         modelUrl:
@@ -69,21 +69,21 @@ global:
           limits:
             nvidia.com/gpu: "4"
         args:
-        - --tensor-parallel-size
-        - "4"
-        - --gpu-memory-utilization
-        - "0.95"
-        - --quantization
-        - fp8
-        - --max-num-batched-tokens
-        - "4096"
-        - --enable-auto-tool-choice
-        - --chat-template
-        - /vllm-workspace/examples/tool_chat_template_llama3.2_json.jinja
-        - --tool-call-parser
-        - llama3_json
-        - --swap-space
-        - "32"
+          - --tensor-parallel-size
+          - "4"
+          - --gpu-memory-utilization
+          - "0.95"
+          - --quantization
+          - fp8
+          - --max-num-batched-tokens
+          - "4096"
+          - --enable-auto-tool-choice
+          - --chat-template
+          - /vllm-workspace/examples/tool_chat_template_llama3.2_json.jinja
+          - --tool-call-parser
+          - llama3_json
+          - --swap-space
+          - "32"
       llamaStack:
         modelIdEnvName: LLAMA_INSTRUCT70B_MODEL
         modelUrl:
@@ -94,4 +94,4 @@ llm-service:
   servingRuntime:
     image: quay.io/ecosystem-appeng/vllm:openai-v0.8.3
     recommendedAccelerators:
-    - nvidia.com/gpu
+      - nvidia.com/gpu

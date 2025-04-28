@@ -22,3 +22,6 @@ servingRuntime:
   - emptyDir:
       sizeLimit: 5Gi
     name: vllm-home
+
+  secret:
+  hf_token: {{ .values.token }} 
