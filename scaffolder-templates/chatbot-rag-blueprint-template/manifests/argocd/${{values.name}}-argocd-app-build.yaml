@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: ${{values.repoURL}}
     targetRevision: HEAD
-    path: ./deploy/helm/ui
+    path: ./deploy/helm/rag-ui
   destination:
     server: https://kubernetes.default.svc
     namespace: ${{ values.name }}-dev
