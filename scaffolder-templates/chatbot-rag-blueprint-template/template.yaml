@@ -148,6 +148,15 @@ spec:
           type: string
           description: The namespace where the application will be deployed
           default: chatbot-app-ns
+    - title: Argo CD Configuration
+      required:
+        - argoInstance
+      properties:
+        argoInstance:
+          title: Argo CD Instance Name
+          type: string
+          default: default
+          description: Enter the logical name of the Argo CD instance as configured in Developer Hub (e.g., 'default')
   steps:
     - id: fetch-helm
       name: Fetch Rag-Blueprint from GitHub
@@ -233,7 +242,7 @@ spec:
       action: argocd:create-resources
       input:
         appName: ${{ parameters.name }}-bootstrap
-        argoInstance: default
+        argoInstance: ${{ parameters.argoInstance }}
         namespace: openshift-gitops
         repoUrl: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}-gitops.git
         path: 'argocd/'
