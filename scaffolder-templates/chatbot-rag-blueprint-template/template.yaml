@@ -202,6 +202,19 @@ spec:
         repoVisibility: "public"
         defaultBranch: "main"
         protectDefaultBranch: false
+    - id: publish-gitlab-gitops
+      name: Publish GitOps Repository to Gitlab
+      action: publish:gitlab
+      if: ${{ parameters.hostType === 'GitLab' }}
+      input:
+        repoUrl: ${{ parameters.gitlabServer }}?owner=${{ parameters.repoOwner }}&repo=${{ parameters.repoName }}-gitops
+        sourcePath: ./tenant-gitops
+        allowedHosts: ['${{ parameters.gitlabServer }}']
+        description: This is GitOps repository for ${{ parameters.name }}
+        namespace: ${{ parameters.namespace }}
+        repoVisibility: "public"
+        defaultBranch: "main"
+        protectDefaultBranch: false    
     - id: wait-for-github-repository
       name: Waiting for Repository Availability
       action: 'debug:wait'
