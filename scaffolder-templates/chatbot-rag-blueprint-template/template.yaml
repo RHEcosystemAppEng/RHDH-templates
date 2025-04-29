@@ -167,8 +167,8 @@ spec:
           - '**/*.jinja2'
         values:
           name: ${{ parameters.name }}
-          description: Deploy llamastack with vllm and rag
-          owner: ${{ parameters.repoowner }}
+          description: Deploy RAG Chatbot using LLaMA Stack, OpenShift AI, and PGVector
+          owner: ${{ parameters.repoOwner }}
           model: ${{ parameters.model }} 
     - id: fetch-argocd
       name: Fetch Argo CD Resources from Local Template
