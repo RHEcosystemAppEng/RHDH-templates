@@ -1,9 +1,0 @@
-notebook:
-  image: image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/s2i-generic-data-science-notebook:2024.2
-  repo: "https://github.com/tsisodia10/ingestion-pipeline.git"
-
-kfp:
-  sdkImage: "quay.io/kubeflow/pipelines-sdk:2.1.0"
-
-pvc:
-  name: "pipeline-vol"

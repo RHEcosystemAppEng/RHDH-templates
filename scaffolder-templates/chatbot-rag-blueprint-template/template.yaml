@@ -201,28 +201,26 @@ spec:
         copyWithoutTemplating:
           - '**/*.jinja'
           - '**/*.jinja2'
+    - id: fetch-skeleton
+      name: Fetch Skeleton from local manifests into tenant-gitops/
+      action: fetch:template
+      input:
+        url: ./skeleton
+        targetPath: ./tenant-gitops
+        copyWithoutTemplating:
+          - '**/*.jinja'
+          - '**/*.jinja2'
         values:
           name: ${{ parameters.name }}
-          appName: ${{ parameters.name }}-gitops
-          namespace: ${{ parameters.namespace }}
-          description: This is GitOps manifest for ${{ parameters.name }}
-          rhdhNamespace: ai-rhdh
-          repoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}-gitops.git
-          srcRepoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}
-          argoComponentOverlays: './components/${{ parameters.name }}/overlays'
+          description: Deploy llamastack with vllm and rag
           owner: ${{ parameters.owner }}
-          argoNS: ai-rhdh
-          argoProject: default
-          model: ${{ parameters.model }}
-          token: ${{ parameters.token }}
-          enbableGPUSupport: ${{ parameters.enbableGPUSupport }}
-          createGPU: ${{ parameters.createGPU }}
+          model: ${{ parameters.model }} 
     - id: fetch-argocd
       name: Fetch Only argocd/ from local manifests into tenant-gitops/
       action: fetch:template
       input:
         url: ./manifests/argocd
-        targetPath: ./tenant-gitops
+        targetPath: ./tenant-gitops/argocd
         copyWithoutTemplating:
           - '**/*.jinja'
           - '**/*.jinja2'

@@ -1,9 +1,0 @@
-{{- if .Values._debugListModels }}
-{{- range $key, $model := .Values.global.models }}
-{{- if $model.llamaStack.registerShield }}
-model: {{ $key }} (shield)
-{{- else }}
-model: {{ $key }}
-{{- end }}
-{{- end }}
-{{- end }}
