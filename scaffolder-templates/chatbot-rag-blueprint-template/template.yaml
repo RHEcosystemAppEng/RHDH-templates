@@ -47,7 +47,7 @@ spec:
           type: string
           description: Owner of the component
           ui:field: OwnerPicker
-          default: user:guest
+          default: user:user1
           ui:options:
             catalogFilter:
               kind: [Group, User]
@@ -70,10 +70,12 @@ spec:
         repoOwner:
           title: Repository Owner
           type: string
+          default: development
           ui:help: The organization, user or project that this repo will belong to
         repoName:
           title: Repository Name
           type: string
+          default: chatbot-app
         branch:
           title: Repository Default Branch
           type: string
@@ -145,7 +147,7 @@ spec:
           title: Namespace
           type: string
           description: The namespace where the application will be deployed
-          default: chatbot-app
+          default: chatbot-app-ns
   steps:
     - id: fetch-helm
       name: Fetch Rag-Blueprint from GitHub
