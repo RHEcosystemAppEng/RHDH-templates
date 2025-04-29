@@ -224,8 +224,8 @@ spec:
         url: ./manifests/argocd
         targetPath: ./tenant-gitops
         copyWithoutTemplating:
-          # - '**/*.jinja'
-          # - '**/*.jinja2'
+          - '**/*.jinja'
+          - '**/*.jinja2'
         values:
           name: ${{ parameters.name }}
           appName: ${{ parameters.name }}-gitops
