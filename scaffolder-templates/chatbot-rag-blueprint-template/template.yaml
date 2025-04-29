@@ -191,13 +191,11 @@ spec:
     #     protectDefaultBranch: false
     #     repoVisibility: "public"
     - id: fetch-helm
-      name: Fetch Helm from GitHub into tenant-gitops/helm
+      name: Fetch Rag-Blueprint from GitHub
       action: fetch:plain
       input:
         url: https://github.com/RHEcosystemAppEng/RAG-Blueprint
-        subpath: deploy/helm
-        targetPath: ./tenant-gitops/helm
-        #url: ./manifests
+        targetPath: ./tenant-gitops
         copyWithoutTemplating:
           - '**/*.jinja'
           - '**/*.jinja2'
