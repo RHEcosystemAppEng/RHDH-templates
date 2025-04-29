@@ -10,8 +10,4 @@ spec:
   type: service
   lifecycle: production
   owner: group:${{ values.owner | dump }}
-  providesApis:
-    - ${{ values.name | dump }}
-  consumesApis:
-    - ${{ (values.name + '-' + values.model + '-api') | dump }}
 

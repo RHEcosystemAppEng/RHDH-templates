@@ -4,15 +4,17 @@ kind: Template
 # This template is used to create a chatbot rag blueprint using llamastack with vllm
 metadata:
   name: chatbot-rag-blueprint-template
-  title: creates a rag blueprint using llamastack with vllm
-  description: creates a rag blueprint using llamastack with vllm
+  title: Deploy RAG Reference Architecture using LLaMA Stack, OpenShift AI, and PGVector via GitOps
+  description: This template will ask some basic information about your application and create a GitOps repository with the necessary resources to deploy the Rag Chatbot application using LLaMA Stack, OpenShift AI, and PGVector.
   tags:
-    - recommended
-    - python
-    - ai
-    - rhoai
+    - chatbot
     - rag
-    - rhtap
+    - vllm
+    - llama
+    - pgvector
+    - openshift-ai
+    - gitops
+    - python
   annotations:
     backstage.io/techdocs-ref: dir:.
 spec:
@@ -144,52 +146,7 @@ spec:
           type: string
           description: The namespace where the application will be deployed
           default: chatbot-app
-  # here's the steps that are executed in series in the scaffolder backend
   steps:
-  #   - id: fetch-base
-  #     name: Fetch Template
-  #     action: fetch:template
-  #     input:
-  #       url: ./skeleton
-  #       values:
-  #         name: ${{ parameters.name }}
-  #         namespace: ${{ parameters.namespace }}
-  #         description: Deploy llamastack with vllm and rag
-  #         owner: ${{ parameters.owner }}
-  #         #repoUrl: ${{ parameters.repoUrl }}
-  #         model: ${{ parameters.model }}
-  #         token: ${{ secrets.token }}
-  #         enbableGPUSupport: ${{ parameters.enbableGPUSupport }}
-  #         createGPU: ${{ parameters.createGPU }}
-  #         defaultBranch: ${{ parameters.branch }}    
-  #   - id: publish-github
-  #     name: Publish rag app to Github
-  #     action: publish:github
-  #     if: ${{ parameters.hostType === 'GitHub' }}
-  #     input:
-  #       allowedHosts: ['${{ parameters.githubServer }}']
-  #       description: This is ${{ parameters.name }}
-  #       repoUrl: ${{ parameters.githubServer }}?owner=${{ parameters.repoOwner }}&repo=${{ parameters.repoName }}
-  #       defaultBranch: ${{ parameters.branch }}
-  #       protectDefaultBranch: true
-  #       allowAutoMerge: true
-  #       deleteBranchOnMerge: true
-  #       requiredStatusCheckContexts: []
-  #       repoVisibility: "public"
-  #       requiredApprovingReviewCount: 0
-    # This action creates a new GitLab repository and publishes the files in the workspace directory to the repository.
-    # - id: publish-gitlab
-    #   name: Publish Repository to GitLab
-    #   action: publish:gitlab
-    #   if: ${{ parameters.hostType === 'GitLab' }}
-    #   input:
-    #     sourcePath: source
-    #     allowedHosts: ['${{ parameters.gitlabServer }}']
-    #     description: This is ${{ parameters.name }}
-    #     repoUrl: ${{ parameters.gitlabServer }}?owner=${{ parameters.repoOwner }}&repo=${{ parameters.repoName }}
-    #     defaultBranch: ${{ parameters.branch }}
-    #     protectDefaultBranch: false
-    #     repoVisibility: "public"
     - id: fetch-helm
       name: Fetch Rag-Blueprint from GitHub
       action: fetch:plain
@@ -200,7 +157,7 @@ spec:
           - '**/*.jinja'
           - '**/*.jinja2'
     - id: fetch-skeleton
-      name: Fetch Skeleton from local manifests into tenant-gitops/
+      name: Fetch catalog-info from local Template
       action: fetch:template
       input:
         url: ./skeleton
@@ -211,10 +168,10 @@ spec:
         values:
           name: ${{ parameters.name }}
           description: Deploy llamastack with vllm and rag
-          owner: ${{ parameters.owner }}
+          owner: ${{ parameters.repoowner }}
           model: ${{ parameters.model }} 
     - id: fetch-argocd
-      name: Fetch Only argocd/ from local manifests into tenant-gitops/
+      name: Fetch Argo CD Resources from Local Template
       action: fetch:template
       input:
         url: ./manifests/argocd
@@ -224,16 +181,10 @@ spec:
           - '**/*.jinja2'
         values:
           name: ${{ parameters.name }}
-          appName: ${{ parameters.name }}-gitops
           namespace: ${{ parameters.namespace }}
           description: This is GitOps manifest for ${{ parameters.name }}
-          rhdhNamespace: ai-rhdh
           repoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}-gitops.git
-          srcRepoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}
-          argoComponentOverlays: './components/${{ parameters.name }}/overlays'
           owner: ${{ parameters.owner }}
-          argoNS: ai-rhdh
-          argoProject: default
           model: ${{ parameters.model }}
           token: ${{ parameters.token }}
           enbableGPUSupport: ${{ parameters.enbableGPUSupport }}
