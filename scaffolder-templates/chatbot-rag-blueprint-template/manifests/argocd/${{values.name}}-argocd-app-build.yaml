@@ -14,7 +14,7 @@ spec:
     path: ./deploy/helm/rag-ui
   destination:
     server: https://kubernetes.default.svc
-    namespace: ${{ values.namespace }}
+    namespace: ${{ values.name }}-dev
   ignoreDifferences:
     - group: '*'
       jqPathExpressions:
