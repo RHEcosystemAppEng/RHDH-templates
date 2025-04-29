@@ -145,7 +145,7 @@ spec:
           description: The namespace where the application will be deployed
           default: chatbot-app
   # here's the steps that are executed in series in the scaffolder backend
-  # steps:
+  steps:
   #   - id: fetch-base
   #     name: Fetch Template
   #     action: fetch:template
