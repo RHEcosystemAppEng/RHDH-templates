@@ -145,38 +145,38 @@ spec:
           description: The namespace where the application will be deployed
           default: chatbot-app
   # here's the steps that are executed in series in the scaffolder backend
-  steps:
-    - id: fetch-base
-      name: Fetch Template
-      action: fetch:template
-      input:
-        url: ./skeleton
-        values:
-          name: ${{ parameters.name }}
-          namespace: ${{ parameters.namespace }}
-          description: Deploy llamastack with vllm and rag
-          owner: ${{ parameters.owner }}
-          #repoUrl: ${{ parameters.repoUrl }}
-          model: ${{ parameters.model }}
-          token: ${{ secrets.token }}
-          enbableGPUSupport: ${{ parameters.enbableGPUSupport }}
-          createGPU: ${{ parameters.createGPU }}
-          defaultBranch: ${{ parameters.branch }}    
-    - id: publish-github
-      name: Publish rag app to Github
-      action: publish:github
-      if: ${{ parameters.hostType === 'GitHub' }}
-      input:
-        allowedHosts: ['${{ parameters.githubServer }}']
-        description: This is ${{ parameters.name }}
-        repoUrl: ${{ parameters.githubServer }}?owner=${{ parameters.repoOwner }}&repo=${{ parameters.repoName }}
-        defaultBranch: ${{ parameters.branch }}
-        protectDefaultBranch: true
-        allowAutoMerge: true
-        deleteBranchOnMerge: true
-        requiredStatusCheckContexts: []
-        repoVisibility: "public"
-        requiredApprovingReviewCount: 0
+  # steps:
+  #   - id: fetch-base
+  #     name: Fetch Template
+  #     action: fetch:template
+  #     input:
+  #       url: ./skeleton
+  #       values:
+  #         name: ${{ parameters.name }}
+  #         namespace: ${{ parameters.namespace }}
+  #         description: Deploy llamastack with vllm and rag
+  #         owner: ${{ parameters.owner }}
+  #         #repoUrl: ${{ parameters.repoUrl }}
+  #         model: ${{ parameters.model }}
+  #         token: ${{ secrets.token }}
+  #         enbableGPUSupport: ${{ parameters.enbableGPUSupport }}
+  #         createGPU: ${{ parameters.createGPU }}
+  #         defaultBranch: ${{ parameters.branch }}    
+  #   - id: publish-github
+  #     name: Publish rag app to Github
+  #     action: publish:github
+  #     if: ${{ parameters.hostType === 'GitHub' }}
+  #     input:
+  #       allowedHosts: ['${{ parameters.githubServer }}']
+  #       description: This is ${{ parameters.name }}
+  #       repoUrl: ${{ parameters.githubServer }}?owner=${{ parameters.repoOwner }}&repo=${{ parameters.repoName }}
+  #       defaultBranch: ${{ parameters.branch }}
+  #       protectDefaultBranch: true
+  #       allowAutoMerge: true
+  #       deleteBranchOnMerge: true
+  #       requiredStatusCheckContexts: []
+  #       repoVisibility: "public"
+  #       requiredApprovingReviewCount: 0
     # This action creates a new GitLab repository and publishes the files in the workspace directory to the repository.
     # - id: publish-gitlab
     #   name: Publish Repository to GitLab
@@ -190,11 +190,14 @@ spec:
     #     defaultBranch: ${{ parameters.branch }}
     #     protectDefaultBranch: false
     #     repoVisibility: "public"
-    - id: fetch-gitops-deployment
-      name: fetch Gitops Skeleton
-      action: fetch:template
+    - id: fetch-helm
+      name: Fetch Helm from GitHub into tenant-gitops/helm
+      action: fetch:plain
       input:
-        url: ./manifests
+        url: https://github.com/RHEcosystemAppEng/RAG-Blueprint
+        subpath: deploy/helm
+        targetPath: ./tenant-gitops/helm
+        #url: ./manifests
         copyWithoutTemplating:
           - '**/*.jinja'
           - '**/*.jinja2'
@@ -214,7 +217,31 @@ spec:
           token: ${{ parameters.token }}
           enbableGPUSupport: ${{ parameters.enbableGPUSupport }}
           createGPU: ${{ parameters.createGPU }}
+    - id: fetch-argocd
+      name: Fetch Only argocd/ from local manifests into tenant-gitops/
+      action: fetch:template
+      input:
+        url: ./manifests/argocd
         targetPath: ./tenant-gitops
+        copyWithoutTemplating:
+          # - '**/*.jinja'
+          # - '**/*.jinja2'
+        values:
+          name: ${{ parameters.name }}
+          appName: ${{ parameters.name }}-gitops
+          namespace: ${{ parameters.namespace }}
+          description: This is GitOps manifest for ${{ parameters.name }}
+          rhdhNamespace: ai-rhdh
+          repoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}-gitops.git
+          srcRepoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}
+          argoComponentOverlays: './components/${{ parameters.name }}/overlays'
+          owner: ${{ parameters.owner }}
+          argoNS: ai-rhdh
+          argoProject: default
+          model: ${{ parameters.model }}
+          token: ${{ parameters.token }}
+          enbableGPUSupport: ${{ parameters.enbableGPUSupport }}
+          createGPU: ${{ parameters.createGPU }}
     - id: publish-github-gitops
       name: Publish GitOps Repository to Github
       action: publish:github
@@ -228,19 +255,6 @@ spec:
         repoVisibility: "public"
         defaultBranch: "main"
         protectDefaultBranch: false
-    # This action creates a new GitLab repository and publishes the files in the workspace directory to the repository.
-    # - id: publish-gitlab-gitops
-    #   name: Publish GitOps Repository to GitLab
-    #   action: publish:gitlab
-    #   if: ${{ parameters.hostType === 'GitLab' }}
-    #   input:
-    #     sourcePath: ./tenant-gitops
-    #     allowedHosts: ['${{ parameters.gitlabServer }}']
-    #     description: This is GitOps repository for ${{ parameters.name }}
-    #     repoUrl: ${{ parameters.gitlabServer }}?owner=${{ parameters.repoOwner }}&repo=${{ parameters.repoName }}-gitops
-    #     defaultBranch: "main"
-    #     protectDefaultBranch: false
-    #     repoVisibility: "public"
     - id: wait-for-github-repository
       name: Waiting for Repository Availability
       action: 'debug:wait'
@@ -252,32 +266,6 @@ spec:
       input:
         repoContentsUrl:  ${{ steps['publish-github'].output.repoContentsUrl if steps['publish-github'].output else steps['publish-gitlab'].output.repoContentsUrl }}
         catalogInfoPath: "/catalog-info.yaml"
-    # # SED_APP_SUPPORT_END
-    # - id: register-gitops
-    #   name: Register Gitops
-    #   action: catalog:register
-    #   input:
-    #     repoContentsUrl: ${{ steps['publish-github-gitops'].output.repoContentsUrl if steps['publish-github-gitops'].output else steps['publish-gitlab-gitops'].output.repoContentsUrl }}
-    #     catalogInfoPath: '/catalog-info.yaml'
-    
-    - id: debug-argocd-input
-      name: Debug ArgoCD Resource Inputs
-      action: debug:log
-      input:
-        message: |
-          --- ArgoCD Create Inputs ---
-          appName: ${{ parameters.name }}-app-of-apps
-          argoInstance: default
-          namespace: ${{ parameters.namespace }}
-          hostType: ${{ parameters.hostType }}
-          githubServer: ${{ parameters.githubServer }}
-          gitlabServer: ${{ parameters.gitlabServer }}
-          repoOwner: ${{ parameters.repoOwner }}
-          repoName: ${{ parameters.repoName }}
-          repoUrl: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}-gitops.git
-          path: argocd/
-
-    
     - id: create-argocd-resources
       name: Create ArgoCD Resources
       action: argocd:create-resources
