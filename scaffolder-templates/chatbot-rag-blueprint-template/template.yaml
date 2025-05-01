@@ -206,31 +206,29 @@ spec:
           default: default
           description: Enter the logical name of the Argo CD instance as configured in Developer Hub (e.g., 'default')
   steps:
-    - id: fetch-rag-blueprint-all
-      name: Fetch Rag-Blueprint Repo
-      action: fetch:plain
+    - id: fetch-without-helm
+      name: Fetch RAG-Blueprint Except deploy/helm
+      action: fetch:template
       input:
         url: https://github.com/RHEcosystemAppEng/RAG-Blueprint
-        targetPath: ./rag-blueprint
+        targetPath: ./tenant
         copyWithoutTemplating:
           - '**/*.jinja'
           - '**/*.jinja2'
-    - id: copy-everything-except-helm
-      name: Copy Everything Except deploy/helm
-      action: fs:copy
+        filterPaths:
+          - '**'
+          - '!deploy/helm/**'  # Exclude the helm subdirectory
+    - id: fetch-rag-blueprint-helm
+      name: Fetch Rag-Blueprint Helm Chart
+      action: fetch:template
       input:
-        files:
-          - from: ./rag-blueprint
-            to: ./tenant
-        exclude:
-          - deploy/helm/**
-    - id: copy-everything-except-helm
-      name: Copy Helm Chart to tenant-gitops
-      action: fs:copy
-      input:
-        files:
-          - from: ./rag-blueprint/deploy
-            to: ./tenant-gitops/deploy
+        url: https://github.com/RHEcosystemAppEng/RAG-Blueprint
+        targetPath: ./tenant-gitops
+        copyWithoutTemplating:
+          - '**/*.jinja'
+          - '**/*.jinja2'
+        filterPaths:
+          - 'deploy/**''
     - id: fetch-skeleton
       name: Fetch catalog-info from local Template
       action: fetch:template
