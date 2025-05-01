@@ -208,27 +208,22 @@ spec:
   steps:
     - id: fetch-without-helm
       name: Fetch RAG-Blueprint Except deploy/helm
-      action: fetch:template
+      action: fetch:plain
       input:
         url: https://github.com/RHEcosystemAppEng/RAG-Blueprint
         targetPath: ./tenant
         copyWithoutTemplating:
           - '**/*.jinja'
           - '**/*.jinja2'
-        filterPaths:
-          - '**'
-          - '!deploy/helm/**'  # Exclude the helm subdirectory
     - id: fetch-rag-blueprint-helm
       name: Fetch Rag-Blueprint Helm Chart
-      action: fetch:template
+      action: fetch:plain
       input:
-        url: https://github.com/RHEcosystemAppEng/RAG-Blueprint
+        url: https://github.com/RHEcosystemAppEng/RAG-Blueprint/tree/main/deploy/helm
         targetPath: ./tenant-gitops
         copyWithoutTemplating:
           - '**/*.jinja'
           - '**/*.jinja2'
-        filterPaths:
-          - 'deploy/**''
     - id: fetch-skeleton
       name: Fetch catalog-info from local Template
       action: fetch:template
