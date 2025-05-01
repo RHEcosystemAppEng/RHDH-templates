@@ -219,7 +219,7 @@ spec:
       name: Fetch Rag-Blueprint Helm Chart
       action: fetch:plain
       input:
-        url: https://github.com/RHEcosystemAppEng/RAG-Blueprint/tree/main/deploy/helm
+        url: https://github.com/RHEcosystemAppEng/RAG-Blueprint/tree/main/deploy
         targetPath: ./tenant-gitops
         copyWithoutTemplating:
           - '**/*.jinja'
