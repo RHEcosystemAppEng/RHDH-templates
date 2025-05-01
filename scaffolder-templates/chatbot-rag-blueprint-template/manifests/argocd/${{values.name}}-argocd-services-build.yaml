@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ${{ values.name }}-dev
+  name: ${{ values.name }}-services
   namespace: openshift-gitops
   finalizers:
     - resources-finalizer.argocd.argoproj.io
