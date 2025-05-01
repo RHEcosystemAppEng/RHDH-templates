@@ -155,8 +155,8 @@ spec:
         safety_model:
           title: Safety Model
           type: string
-          description: Choose your LLM model
-          default: llama-guard-3-8b
+          description: Choose your Safety model
+          default: llama-guard-3-1b (meta-llama/Llama-Guard-3-1B)
           enum:
             - llama-guard-3-1b (meta-llama/Llama-Guard-3-1B)
             - llama-guard-3-8b (meta-llama/Llama-Guard-3-8B)
@@ -206,12 +206,26 @@ spec:
           default: default
           description: Enter the logical name of the Argo CD instance as configured in Developer Hub (e.g., 'default')
   steps:
+    - id: fetch-source
+      name: Fetch Rag-Blueprint source repo from GitHub (excludes helm chart)
+      action: fetch:plain
+      input:
+        url: https://github.com/RHEcosystemAppEng/RAG-Blueprint
+        targetPath: ./tenant
+        copyWithoutTemplating:
+          - '**/*.jinja'
+          - '**/*.jinja2'
+        filter:
+          exclude:
+            - '**/helm/**'
     - id: fetch-helm
-      name: Fetch Rag-Blueprint from GitHub
+      name: Fetch Rag-Blueprint Helm Chart repo from GitHub
       action: fetch:plain
       input:
         url: https://github.com/RHEcosystemAppEng/RAG-Blueprint
         targetPath: ./tenant-gitops
+        filterPaths:
+          - 'deploy/helm/**'     # Only include files from deploy/helm
         copyWithoutTemplating:
           - '**/*.jinja'
           - '**/*.jinja2'
@@ -248,6 +262,19 @@ spec:
           token: ${{ parameters.token }}
           enbableGPUSupport: ${{ parameters.enbableGPUSupport }}
           createGPU: ${{ parameters.createGPU }}
+    - id: publish-github
+      name: Publish APP to Github
+      action: publish:github
+      if: ${{ parameters.hostType === 'GitHub' }}
+      input:
+        repoUrl: ${{ parameters.githubServer }}?owner=${{ parameters.repoOwner }}&repo=${{ parameters.repoName }}
+        sourcePath: ./tenant
+        allowedHosts: ['${{ parameters.githubServer }}']
+        description: This is source repository for ${{ parameters.name }}
+        namespace: ${{ parameters.namespace }}
+        repoVisibility: "public"
+        defaultBranch: "main"
+        protectDefaultBranch: false
     - id: publish-github-gitops
       name: Publish GitOps Repository to Github
       action: publish:github
