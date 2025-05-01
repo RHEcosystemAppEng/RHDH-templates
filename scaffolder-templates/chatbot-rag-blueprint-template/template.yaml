@@ -206,8 +206,8 @@ spec:
           default: default
           description: Enter the logical name of the Argo CD instance as configured in Developer Hub (e.g., 'default')
   steps:
-    - id: fetch-without-helm
-      name: Fetch RAG-Blueprint Except deploy/helm
+    - id: fetch-all-rag-blueprint
+      name: Fetch RAG-Blueprint
       action: fetch:plain
       input:
         url: https://github.com/RHEcosystemAppEng/RAG-Blueprint
