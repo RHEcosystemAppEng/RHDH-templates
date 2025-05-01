@@ -112,11 +112,11 @@ spec:
           title: Model
           type: string
           description: choose your LLM model
-          default: llama-3-2-1b-instruct (meta-llama/Llama-3.2-1B-Instruct)
+          default: llama-3-2-1b-instruct
           enum:
-          - llama-3-2-1b-instruct (meta-llama/Llama-3.2-1B-Instruct)
-          - llama-3-2-3b-instruct (meta-llama/Llama-3.2-3B-Instruct)
-          - llama-3-3-70b-instruct (meta-llama/Llama-3.3-70B-Instruct)
+          - llama-3-2-1b-instruct
+          - llama-3-2-3b-instruct
+          - llama-3-3-70b-instruct
         llm_toleration:
           title: LLM Toleration
           type: string
@@ -156,10 +156,10 @@ spec:
           title: Safety Model
           type: string
           description: Choose your Safety model
-          default: llama-guard-3-1b (meta-llama/Llama-Guard-3-1B)
+          default: llama-guard-3-1b
           enum:
-            - llama-guard-3-1b (meta-llama/Llama-Guard-3-1B)
-            - llama-guard-3-8b (meta-llama/Llama-Guard-3-8B)
+            - llama-guard-3-1b
+            - llama-guard-3-8b
         safety_toleration:
           title: Safety Toleration
           type: string
@@ -254,7 +254,7 @@ spec:
           description: This is GitOps manifest for ${{ parameters.name }}
           repoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}-gitops.git
           owner: ${{ parameters.owner }}
-          llm_model: ${{ parameters.model }}
+          llm_model: ${{ parameters.llm_model }}
           llm_toleration: ${{ parameters.llm_toleration }}
           llm_taint: ${{ parameters.llm_taint }}
           safety_model: ${{ parameters.safety_model }}

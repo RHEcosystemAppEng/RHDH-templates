@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: ${{values.repoURL}}
     targetRevision: HEAD
-    path: ./helm/rag-ui
+    path: ./helm/llm-service
     helm:
       valueFiles:
         - values.yaml
