@@ -206,29 +206,31 @@ spec:
           default: default
           description: Enter the logical name of the Argo CD instance as configured in Developer Hub (e.g., 'default')
   steps:
-    - id: fetch-source
-      name: Fetch Rag-Blueprint source repo from GitHub (excludes helm chart)
+    - id: fetch-rag-blueprint-all
+      name: Fetch Rag-Blueprint Repo
       action: fetch:plain
       input:
         url: https://github.com/RHEcosystemAppEng/RAG-Blueprint
-        targetPath: ./tenant
+        targetPath: ./rag-blueprint
         copyWithoutTemplating:
           - '**/*.jinja'
           - '**/*.jinja2'
-        filter:
-          exclude:
-            - '**/helm/**'
-    - id: fetch-helm
-      name: Fetch Rag-Blueprint Helm Chart repo from GitHub
-      action: fetch:plain
+    - id: copy-everything-except-helm
+      name: Copy Everything Except deploy/helm
+      action: fs:copy
       input:
-        url: https://github.com/RHEcosystemAppEng/RAG-Blueprint
-        targetPath: ./tenant-gitops
-        filterPaths:
-          - 'deploy/helm/**'     # Only include files from deploy/helm
-        copyWithoutTemplating:
-          - '**/*.jinja'
-          - '**/*.jinja2'
+        files:
+          - from: ./rag-blueprint
+            to: ./tenant
+        exclude:
+          - deploy/helm/**
+    - id: copy-everything-except-helm
+      name: Copy Helm Chart to tenant-gitops
+      action: fs:copy
+      input:
+        files:
+          - from: ./rag-blueprint/deploy
+            to: ./tenant-gitops/deploy
     - id: fetch-skeleton
       name: Fetch catalog-info from local Template
       action: fetch:template
@@ -263,7 +265,7 @@ spec:
           enbableGPUSupport: ${{ parameters.enbableGPUSupport }}
           createGPU: ${{ parameters.createGPU }}
     - id: publish-github
-      name: Publish APP to Github
+      name: Publish application sources to Github
       action: publish:github
       if: ${{ parameters.hostType === 'GitHub' }}
       input:
