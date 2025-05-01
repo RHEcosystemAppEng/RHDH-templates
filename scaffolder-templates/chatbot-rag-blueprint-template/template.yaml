@@ -40,7 +40,7 @@ spec:
           title: Description
           type: string
           description: Description of the component
-          default: chatbot rag app
+          default: Chatbot with built-in RAG
           maxLength: 63
         owner:
           title: Owner
@@ -104,7 +104,7 @@ spec:
                   default: gitlab.com
                   ui:help: "You can also provide the on-prem gitlab server, example: gitlab-gitlab.apps.cluster-ljg9z.sandbox219.opentlc.com"
   
-    - title: Choose a model
+    - title: Select Language model
       required:
         - model
       properties:
@@ -112,33 +112,81 @@ spec:
           title: Model
           type: string
           description: choose your LLM model
-          default: ibm-granite/granite-3.2-8b-instruct
+          default: llama-3-2-1b-instruct (meta-llama/Llama-3.2-1B-Instruct)
           enum:
-          - meta-llama/Llama-3.2-3B-Instruct
-          - ibm-granite/granite-3.2-8b-instruct
+          - llama-3-2-1b-instruct (meta-llama/Llama-3.2-1B-Instruct)
+          - llama-3-2-3b-instruct (meta-llama/Llama-3.2-3B-Instruct)
+          - llama-3-3-70b-instruct (meta-llama/Llama-3.3-70B-Instruct)
+        llm_toleration:
+          title: LLM Toleration
+          type: string
+          description: LLM toleration
+          default: nvidia.com/gpu
+        taint:
+          title: Taint GPU-enabled worker node
+          type: string
+          description: What taints identify GPU-enabled worker nodes.
+          default: nvidia.com/gpu
         token:
           title: Hugging Face Token
           type: string
           ui:field: Secret
           description: Enter your Hugging Face token
-        enbableGPUSupport:
-          title: Enable GPU Support 
-          type: boolean
-          # ui:widget: radio
-          description: defaults to cpu
-      dependencies:
-        enbableGPUSupport:
-          allOf:
-            - if:
-                properties: 
-                  enbableGPUSupport:
-                    const: true
-              then:
-                properties:
-                  createGPU:
-                    title: Create GPU
-                    type: boolean
-                    description: provision your own gpu
+      #   enbableGPUSupport:
+      #     title: Enable GPU Support 
+      #     type: boolean
+      #     # ui:widget: radio
+      #     description: defaults to cpu
+      # dependencies:
+      #   enbableGPUSupport:
+      #     allOf:
+      #       - if:
+      #           properties: 
+      #             enbableGPUSupport:
+      #               const: true
+      #         then:
+      #           properties:
+      #             createGPU:
+      #               title: Create GPU
+      #               type: boolean
+      #               description: provision your own gpu
+    - title: Select Safety Model
+      properties:
+        safety_model:
+          title: Safety Model
+          type: string
+          description: Choose your LLM model
+          default: llama-guard-3-8b
+          enum:
+            - llama-guard-3-1b (meta-llama/Llama-Guard-3-1B)
+            - llama-guard-3-8b (meta-llama/Llama-Guard-3-8B)
+        safety_llm_toleration:
+          title: Safety Toleration
+          type: string
+          description: toleration
+          default: nvidia.com/gpu
+        safety_taint:
+          title: Safety LLM Taint
+          type: string
+          description: taint
+          default: placeholder
+    - title: Configure S3 Storage
+      properties:
+        storage:
+          title: s3 Storage
+          type: string
+          description: s3 Storage Bucket
+          default: s3
+        s3userid:
+          title: s3userid
+          type: string
+          description: s3 bucket userid
+          default: s3bucket_userid
+        s3password:
+          title: s3password
+          type: string
+          description: s3 bucket password
+          default: s3bucket_password
     - title: Application Namespace
       required:
         - namespace
