@@ -12,6 +12,26 @@ spec:
     repoURL: ${{values.repoURL}}
     targetRevision: HEAD
     path: ./helm/rag-ui
+    helm:
+      valueFiles:
+        - values.yaml
+      #$(if $(LLM),--set-json llama-stack.models.$(LLM).enabled='true',) \
+      #$(if $(SAFETY),--set-json llama-stack.models.$(SAFETY).enabled='true',) \
+      #$(if $(LLM_URL),--set-json llama-stack.models.$(LLM).url='"$(LLM_URL)"',) \
+      #$(if $(SAFETY_URL),--set-json llama-stack.models.$(SAFETY).url='"$(SAFETY_URL)"',) \
+      #$(if $(LLM_API_TOKEN),--set-json llama-stack.models.$(LLM).apiToken='"$(LLM_API_TOKEN)"',) \
+      #$(if $(SAFETY_API_TOKEN),--set-json llama-stack.models.$(SAFETY).apiToken='"$(SAFETY_API_TOKEN)"',) \
+      parameters:
+        - name: source
+          value: ${{ values.s3_bucket }}
+        - name: embedding_model
+          value: ${{ values.embedding_model }}
+        - name: bucket_name
+          value: ${{ values.bucket_name }}
+        - name: llm
+          value: ${{ values.llm_model }}
+        - name: safety
+          value: ${{ values.safety_model }}
   destination:
     server: https://kubernetes.default.svc
     namespace: ${{ values.namespace }}

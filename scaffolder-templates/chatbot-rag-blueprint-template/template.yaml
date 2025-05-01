@@ -106,9 +106,9 @@ spec:
   
     - title: Select Language model
       required:
-        - model
+        - llm_model
       properties:
-        model:
+        llm_model:
           title: Model
           type: string
           description: choose your LLM model
@@ -122,7 +122,7 @@ spec:
           type: string
           description: LLM toleration
           default: nvidia.com/gpu
-        taint:
+        llm_taint:
           title: Taint GPU-enabled worker node
           type: string
           description: What taints identify GPU-enabled worker nodes.
@@ -160,7 +160,7 @@ spec:
           enum:
             - llama-guard-3-1b (meta-llama/Llama-Guard-3-1B)
             - llama-guard-3-8b (meta-llama/Llama-Guard-3-8B)
-        safety_llm_toleration:
+        safety_toleration:
           title: Safety Toleration
           type: string
           description: toleration
@@ -171,18 +171,19 @@ spec:
           description: taint
           default: placeholder
     - title: Configure S3 Storage
+      #$(ACCESS_KEY_ID),$(SECRET_ACCESS_KEY),$(BUCKET_NAME),$(ENDPOINT_URL),$(REGION))',)
       properties:
-        storage:
+        s3_storage:
           title: s3 Storage
           type: string
           description: s3 Storage Bucket
           default: s3
-        s3userid:
+        s3_userid:
           title: s3userid
           type: string
           description: s3 bucket userid
           default: s3bucket_userid
-        s3password:
+        s3_password:
           title: s3password
           type: string
           description: s3 bucket password
@@ -253,10 +254,18 @@ spec:
           description: This is GitOps manifest for ${{ parameters.name }}
           repoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}-gitops.git
           owner: ${{ parameters.owner }}
-          model: ${{ parameters.model }}
+          llm_model: ${{ parameters.model }}
+          llm_toleration: ${{ parameters.llm_toleration }}
+          llm_taint: ${{ parameters.llm_taint }}
+          safety_model: ${{ parameters.safety_model }}
+          safety_toleration: ${{ parameters.safety_toleration }}
+          safety_taint: ${{ parameters.safety_taint }}
+          s3_bucket: ${{ parameters.s3_storage }}
+          s3_userid: ${{ parameters.s3_userid }}
+          s3_password: ${{ parameters.s3_password }}
           token: ${{ parameters.token }}
-          enbableGPUSupport: ${{ parameters.enbableGPUSupport }}
-          createGPU: ${{ parameters.createGPU }}
+          # enbableGPUSupport: ${{ parameters.enbableGPUSupport }}
+          # createGPU: ${{ parameters.createGPU }}
     - id: publish-github
       name: Publish application sources to Github
       action: publish:github
@@ -279,7 +288,6 @@ spec:
         sourcePath: ./tenant-gitops
         allowedHosts: ['${{ parameters.githubServer }}']
         description: This is GitOps repository for ${{ parameters.name }}
-        namespace: ${{ parameters.namespace }}
         repoVisibility: "public"
         defaultBranch: "main"
         protectDefaultBranch: false
