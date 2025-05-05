@@ -22,7 +22,7 @@ spec:
       #$(if $(LLM_API_TOKEN),--set-json llama-stack.models.$(LLM).apiToken='"$(LLM_API_TOKEN)"',) \
       #$(if $(SAFETY_API_TOKEN),--set-json llama-stack.models.$(SAFETY).apiToken='"$(SAFETY_API_TOKEN)"',) \
       parameters:
-        - name: llama-stack.models.${{ value.llm }}.enabled
+        - name: llama-stack.models.${{ values.llm }}.enabled
           value: "true"
         - name: llama-stack.models.${{ value.safety }}.enabled
           value: "true"
@@ -30,7 +30,7 @@ spec:
     server: https://kubernetes.default.svc
     namespace: ${{ values.namespace }}
   ignoreDifferences:
-    - group: '*'
+    - group: "*"
       jqPathExpressions:
         - '.imagePullSecrets[] | select(.name | contains("-dockercfg-"))'
       kind: ServiceAccount
@@ -39,8 +39,8 @@ spec:
       prune: true
       selfHeal: true
     syncOptions:
-    - ApplyOutOfSyncOnly=true
-    - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+      - CreateNamespace=true
     retry:
       limit: -1
       backoff:
