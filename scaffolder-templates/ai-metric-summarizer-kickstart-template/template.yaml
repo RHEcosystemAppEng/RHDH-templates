@@ -105,7 +105,7 @@ spec:
       required:
         - llm_model
       properties:
-        llm_model:
+        llm:
           title: Model
           type: string
           description: choose your LLM model
@@ -121,7 +121,7 @@ spec:
           default: nvidia.com/gpu
     - title: Select Safety Model
       properties:
-        safety_model:
+        safety:
           title: Safety Model
           type: string
           description: Choose your Safety model
@@ -203,16 +203,10 @@ spec:
             else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{
             parameters.repoName }}-gitops.git
           owner: ${{ parameters.owner }}
-          llm_model: ${{ parameters.llm_model }}
+          llm: ${{ parameters.llm }}
           llm_toleration: ${{ parameters.llm_toleration }}
-          llm_taint: ${{ parameters.llm_taint }}
-          safety_model: ${{ parameters.safety_model }}
+          safety: ${{ parameters.safety }}
           safety_toleration: ${{ parameters.safety_toleration }}
-          safety_taint: ${{ parameters.safety_taint }}
-          s3_bucket: ${{ parameters.s3_storage }}
-          s3_userid: ${{ parameters.s3_userid }}
-          s3_password: ${{ parameters.s3_password }}
-          token: ${{ parameters.token }}
     - id: publish-github
       name: Publish Rag-Blueprint to Github
       action: publish:github
