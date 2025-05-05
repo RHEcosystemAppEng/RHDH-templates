@@ -1,13 +1,13 @@
 # 🧩 Using RHEcosystemAppEng/RHDH-templates as Golden Templates in Red Hat Developer Hub
 
-This guide walks you through using [RHEcosystemAppEng/RHDH-templates](https://github.com/RHEcosystemAppEng/RHDH-templates) as **golden templates** inside your own instance of [Red Hat Developer Hub (RHDH)](https://redhat-developer-hub-ai-rhdh.apps.gpu.osdu.opdev.io/).
+This guide walks you through using [RHEcosystemAppEng/RHDH-templates](https://github.com/RHEcosystemAppEng/RHDH-templates) as **golden templates** inside your own instance of [Red Hat Developer Hub (RHDH)](https://redhat-developer-hub-openshift-gitops.apps.gpu.osdu.opdev.io/).
 
 ---
 
 ## ✅ Prerequisites
 
 - Access to a running RHDH instance  
-  👉 [https://redhat-developer-hub-ai-rhdh.apps.gpu.osdu.opdev.io](https://redhat-developer-hub-ai-rhdh.apps.gpu.osdu.opdev.io)
+  👉 [https://redhat-developer-hub-openshift-gitops.apps.gpu.osdu.opdev.io](https://redhat-developer-hub-openshift-gitops.apps.gpu.osdu.opdev.io)
 - Access to GitHub and permission to use the `RHEcosystemAppEng/RHDH-templates` repository
 
 ---
@@ -16,7 +16,7 @@ This guide walks you through using [RHEcosystemAppEng/RHDH-templates](https://gi
 
 ### 1. Open the Developer Hub
 
-Visit your RHDH instance: https://redhat-developer-hub-ai-rhdh.apps.gpu.osdu.opdev.io
+Visit your RHDH instance: https://redhat-developer-hub-openshift-gitops.apps.gpu.osdu.opdev.io
 
 
 ---
