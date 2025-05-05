@@ -103,7 +103,7 @@ spec:
                     gitlab-gitlab.apps.cluster-ljg9z.sandbox219.opentlc.com"
     - title: Select Language model
       required:
-        - llm_model
+        - llm
       properties:
         llm:
           title: Model
