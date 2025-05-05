@@ -59,8 +59,6 @@ spec:
       required:
         - hostType
         - repoOwner
-        - repoName
-        - branch
       properties:
         hostType:
           title: Host Type
