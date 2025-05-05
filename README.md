@@ -9,7 +9,6 @@ This guide walks you through using [RHEcosystemAppEng/RHDH-templates](https://gi
 - Access to a running RHDH instance  
   👉 [https://redhat-developer-hub-ai-rhdh.apps.gpu.osdu.opdev.io](https://redhat-developer-hub-ai-rhdh.apps.gpu.osdu.opdev.io)
 - Access to GitHub and permission to use the `RHEcosystemAppEng/RHDH-templates` repository
-- A GitHub personal access token (if needed for private repos)
 
 ---
 
@@ -61,6 +60,14 @@ Click a template to launch the guided form.
 - Once complete, follow the output links to:
   - View the source repository
   - See the component in the catalog
-  - Review Argo CD, CI/CD, or TechDocs integrations (if included)
+  - Review Argo CD
+  - You’ll likely see sync errors indicating that a required secret is missing
 
+### 6. Create a secret
 
+- Requires a secret to be defined that provides the [Hugging Face Token](https://huggingface.co/)
+  - Manually create a Kubernetes Secret or create a secret using a secure secret solution such as Vault
+    ````
+    kubectl create secret generic huggingface-secret -n <The namespace where the application will be deployed> --from-literal=HF_TOKEN=$HF_TOKEN
+    ````
+  - Once the secret has been created in the cluster, you can review Argo CD to confirm that the related errors have been resolved.

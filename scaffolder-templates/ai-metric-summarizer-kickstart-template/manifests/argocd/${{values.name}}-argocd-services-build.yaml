@@ -1,0 +1,49 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ${{ values.name }}-llm-services
+  namespace: openshift-gitops
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: ${{ values.name }}-bootstrap
+  source:
+    repoURL: ${{values.repoURL}}
+    targetRevision: HEAD
+    path: ./helm/llm-service
+    helm:
+      valueFiles:
+        - values.yaml
+      #$(if $(LLM),--set-json llama-stack.models.$(LLM).enabled='true',) \
+      #$(if $(SAFETY),--set-json llama-stack.models.$(SAFETY).enabled='true',) \
+      #$(if $(LLM_URL),--set-json llama-stack.models.$(LLM).url='"$(LLM_URL)"',) \
+      #$(if $(SAFETY_URL),--set-json llama-stack.models.$(SAFETY).url='"$(SAFETY_URL)"',) \
+      #$(if $(LLM_API_TOKEN),--set-json llama-stack.models.$(LLM).apiToken='"$(LLM_API_TOKEN)"',) \
+      #$(if $(SAFETY_API_TOKEN),--set-json llama-stack.models.$(SAFETY).apiToken='"$(SAFETY_API_TOKEN)"',) \
+      parameters:
+        - name: llama-stack.models.$(LLM).enabled
+          value: "true"
+        - name: llama-stack.models.$(SAFETY).enabled
+          value: "true"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ${{ values.namespace }}
+  ignoreDifferences:
+    - group: '*'
+      jqPathExpressions:
+        - '.imagePullSecrets[] | select(.name | contains("-dockercfg-"))'
+      kind: ServiceAccount
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - ApplyOutOfSyncOnly=true
+    - CreateNamespace=true
+    retry:
+      limit: -1
+      backoff:
+        duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
+        factor: 2 # a factor to multiply the base duration after each failed retry
+        maxDuration: 2m # the maximum amount of time allowed for the backoff strategy

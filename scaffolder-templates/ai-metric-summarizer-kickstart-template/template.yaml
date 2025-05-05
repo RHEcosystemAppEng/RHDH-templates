@@ -1,0 +1,291 @@
+# Edit the template parameters below to see how they will render in the scaffolder form UI
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+# This template is used to create a chatbot rag blueprint using llamastack with vllm
+metadata:
+  name: chatbot-rag-blueprint-template
+  title: AI Observability Metrics Summarizer
+  description: This template will ask some basic information about your application and create a GitOps repository with the necessary resources to deploy the chatbot interface to analyze AI model performance metrics collected from Prometheus and generate human-like summaries using a Llama model deployed on OpenShift AI.
+  tags:
+    - chatbot
+    - rag
+    - vllm
+    - llama
+    - pgvector
+    - openshift-ai
+    - gitops
+    - python
+    - prometheus
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+spec:
+  owner: rhdh
+  type: service
+  # These parameters are used to generate the input form in the frontend, and are
+  # used to gather input data for the execution of the template.
+  parameters:
+    - title: Application Information
+      required:
+        - name
+        - owner
+      properties:
+        name:
+          title: Name
+          type: string
+          description: Unique identifier for the component
+          default: chatbot-app
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+        description:
+          title: Description
+          type: string
+          description: Description of the component
+          default: Chatbot with built-in RAG
+          maxLength: 63
+        owner:
+          title: Owner
+          type: string
+          description: Owner of the component
+          ui:field: OwnerPicker
+          default: user:user1
+          ui:options:
+            catalogFilter:
+              kind:
+                - Group
+                - User
+              readonly: false
+    - title: Application Repository Location
+      required:
+        - hostType
+        - repoOwner
+        - repoName
+        - branch
+      properties:
+        hostType:
+          title: Host Type
+          type: string
+          enum:
+            - GitHub
+            - GitLab
+          default: GitHub
+        repoOwner:
+          title: Repository Owner
+          type: string
+          default: development
+          ui:help: The organization, user or project that this repo will belong to
+        repoName:
+          title: Repository Name
+          type: string
+          default: chatbot-app
+      dependencies:
+        hostType:
+          oneOf:
+            - required:
+                - githubServer
+              properties:
+                hostType:
+                  const: GitHub
+                githubServer:
+                  title: Repository Server
+                  type: string
+                  default: github.com
+                  ui:help: "You can also provide the on-prem github server, example:
+                    github-github.apps.cluster-ljg9z.sandbox219.opentlc.com"
+            - required:
+                - gitlabServer
+              properties:
+                hostType:
+                  const: GitLab
+                gitlabServer:
+                  title: Repository Server
+                  type: string
+                  default: gitlab.com
+                  ui:help: "You can also provide the on-prem gitlab server, example:
+                    gitlab-gitlab.apps.cluster-ljg9z.sandbox219.opentlc.com"
+    - title: Select Language model
+      required:
+        - llm_model
+      properties:
+        llm_model:
+          title: Model
+          type: string
+          description: choose your LLM model
+          default: llama-3-2-1b-instruct
+          enum:
+            - llama-3-2-1b-instruct
+            - llama-3-2-3b-instruct
+            - llama-3-3-70b-instruct
+        llm_toleration:
+          title: LLM Toleration
+          type: string
+          description: LLM toleration
+          default: nvidia.com/gpu
+        token:
+          title: Hugging Face Token
+          type: string
+          ui:field: Secret
+          description: Enter your Hugging Face token
+    - title: Select Safety Model
+      properties:
+        safety_model:
+          title: Safety Model
+          type: string
+          description: Choose your Safety model
+          default: llama-guard-3-1b
+          enum:
+            - llama-guard-3-1b
+            - llama-guard-3-8b
+        safety_toleration:
+          title: Safety Toleration
+          type: string
+          description: toleration
+          default: nvidia.com/gpu
+    - title: Application Namespace
+      required:
+        - namespace
+      properties:
+        namespace:
+          title: Namespace
+          type: string
+          description: The namespace where the application will be deployed
+          default: chatbot-app-ns
+    - title: Argo CD Configuration
+      required:
+        - argoInstance
+      properties:
+        argoInstance:
+          title: Argo CD Instance Name
+          type: string
+          default: default
+          description: Enter the logical name of the Argo CD instance as configured in
+            Developer Hub (e.g., 'default')
+  steps:
+    - id: fetch-all-rag-blueprint
+      name: Fetch RAG-Blueprint
+      action: fetch:plain
+      input:
+        url: https://github.com/RHEcosystemAppEng/AI-Observability-Metrics-Summarizer
+        targetPath: ./tenant
+        copyWithoutTemplating:
+          - "**/*.jinja"
+          - "**/*.jinja2"
+    - id: fetch-rag-blueprint-helm
+      name: Fetch Rag-Blueprint Helm Chart
+      action: fetch:plain
+      input:
+        url: https://github.com/RHEcosystemAppEng/AI-Observability-Metrics-Summarizer/tree/main/deploy
+        targetPath: ./tenant-gitops
+        copyWithoutTemplating:
+          - "**/*.jinja"
+          - "**/*.jinja2"
+    - id: fetch-skeleton
+      name: Fetch catalog-info from local Template
+      action: fetch:template
+      input:
+        url: ./skeleton
+        targetPath: ./tenant-gitops
+        copyWithoutTemplating:
+          - "**/*.jinja"
+          - "**/*.jinja2"
+        values:
+          name: ${{ parameters.name }}
+          description: This is GitOps manifest for ${{ parameters.name }}
+          owner: ${{ parameters.repoOwner }}
+          model: ${{ parameters.model }}
+    - id: fetch-argocd
+      name: Fetch Argo CD Resources from Local Template
+      action: fetch:template
+      input:
+        url: ./manifests/argocd
+        targetPath: ./tenant-gitops/argocd
+        copyWithoutTemplating:
+          - "**/*.jinja"
+          - "**/*.jinja2"
+        values:
+          name: ${{ parameters.name }}
+          namespace: ${{ parameters.namespace }}
+          description: This is GitOps manifest for ${{ parameters.name }}
+          repoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub'
+            else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{
+            parameters.repoName }}-gitops.git
+          owner: ${{ parameters.owner }}
+          llm_model: ${{ parameters.llm_model }}
+          llm_toleration: ${{ parameters.llm_toleration }}
+          llm_taint: ${{ parameters.llm_taint }}
+          safety_model: ${{ parameters.safety_model }}
+          safety_toleration: ${{ parameters.safety_toleration }}
+          safety_taint: ${{ parameters.safety_taint }}
+          s3_bucket: ${{ parameters.s3_storage }}
+          s3_userid: ${{ parameters.s3_userid }}
+          s3_password: ${{ parameters.s3_password }}
+          token: ${{ parameters.token }}
+    - id: publish-github
+      name: Publish Rag-Blueprint to Github
+      action: publish:github
+      if: ${{ parameters.hostType === 'GitHub' }}
+      input:
+        repoUrl: ${{ parameters.githubServer }}?owner=${{ parameters.repoOwner
+          }}&repo=${{ parameters.repoName }}
+        sourcePath: ./tenant
+        allowedHosts:
+          - ${{ parameters.githubServer }}
+        description: This is source repository for ${{ parameters.name }}
+        namespace: ${{ parameters.namespace }}
+        repoVisibility: public
+        defaultBranch: main
+        protectDefaultBranch: false
+    - id: publish-github-gitops
+      name: Publish GitOps to Github
+      action: publish:github
+      if: ${{ parameters.hostType === 'GitHub' }}
+      input:
+        repoUrl: ${{ parameters.githubServer }}?owner=${{ parameters.repoOwner
+          }}&repo=${{ parameters.repoName }}-gitops
+        sourcePath: ./tenant-gitops
+        allowedHosts:
+          - ${{ parameters.githubServer }}
+        description: This is GitOps repository for ${{ parameters.name }}
+        repoVisibility: public
+        defaultBranch: main
+        protectDefaultBranch: false
+    - id: wait-for-github-repository
+      name: Waiting for Repository Availability
+      action: debug:wait
+      input:
+        seconds: 3
+    - id: register
+      name: Register
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps['publish-github-gitops'].output.repoContentsUrl if
+          steps['publish-github-gitops'].output else
+          steps['publish-gitlab-gitops'].output.repoContentsUrl }}
+        catalogInfoPath: /catalog-info.yaml
+    - id: create-argocd-resources
+      name: Create ArgoCD Resources
+      action: argocd:create-resources
+      input:
+        appName: ${{ parameters.name }}-bootstrap
+        argoInstance: ${{ parameters.argoInstance }}
+        namespace: openshift-gitops
+        repoUrl: https://${{ parameters.githubServer if parameters.hostType === 'GitHub'
+          else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{
+          parameters.repoName }}-gitops.git
+        path: argocd/
+  output:
+    links:
+      - title: Source Repository
+        url: ${{ steps['publish-github'].output.remoteUrl if
+          steps['publish-github'].output else
+          steps['publish-gitlab'].output.remoteUrl }}
+      - title: GitOps Repository
+        url: ${{ steps['publish-github-gitops'].output.remoteUrl if
+          steps['publish-github-gitops'].output else
+          steps['publish-gitlab-gitops'].output.remoteUrl }}
+      - title: Open Component in Catalog
+        icon: catalog
+        entityRef: ${{ steps['register'].output.entityRef }}
+      - title: Open GitOps Resource in Catalog
+        icon: catalog
+        entityRef: ${{ steps['register-gitops'].output.entityRef }}

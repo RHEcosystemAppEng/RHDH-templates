@@ -6,5 +6,6 @@ metadata:
 spec:
   type: url
   targets:
+    - scaffolder-templates/ai-metric-summarizer-kickstart-template/template.yaml
     - scaffolder-templates/chatbot-rag-blueprint-template/template.yaml
 
