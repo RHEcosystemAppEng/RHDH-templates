@@ -33,7 +33,7 @@ spec:
           title: Name
           type: string
           description: Unique identifier for the component
-          default: chatbot-app
+          default: ai-metric-chatbot
           ui:autofocus: true
           ui:options:
             rows: 5
@@ -75,7 +75,7 @@ spec:
         repoName:
           title: Repository Name
           type: string
-          default: chatbot-app
+          default: ai-metric-chatbot
       dependencies:
         hostType:
           oneOf:
