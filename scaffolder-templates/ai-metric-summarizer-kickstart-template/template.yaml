@@ -3,7 +3,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 # This template is used to create a chatbot rag blueprint using llamastack with vllm
 metadata:
-  name: chatbot-rag-blueprint-template
+  name: ai-metric-summarizer-blueprint-template
   title: AI Observability Metrics Summarizer
   description: This template will ask some basic information about your application and create a GitOps repository with the necessary resources to deploy the chatbot interface to analyze AI model performance metrics collected from Prometheus and generate human-like summaries using a Llama model deployed on OpenShift AI.
   tags:
