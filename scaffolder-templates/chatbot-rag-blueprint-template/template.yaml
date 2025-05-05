@@ -171,23 +171,22 @@ spec:
           description: taint
           default: placeholder
     - title: Configure S3 Storage
-      #$(ACCESS_KEY_ID),$(SECRET_ACCESS_KEY),$(BUCKET_NAME),$(ENDPOINT_URL),$(REGION))',)
       properties:
-        s3_storage:
-          title: s3 Storage
+        s3_bucket_name:
+          title: s3 Bucket Name
           type: string
-          description: s3 Storage Bucket
-          default: s3
-        s3_userid:
-          title: s3userid
+          description: s3 Bucket name
+          default: s3-bucket-name
+        endpoint_url:
+          title: Endpoint URL
           type: string
-          description: s3 bucket userid
-          default: s3bucket_userid
-        s3_password:
-          title: s3password
+          description: s3 endpoint url
+          default: https://s3.amazonaws.com
+        region:
+          title: Region
           type: string
-          description: s3 bucket password
-          default: s3bucket_password
+          description: s3 region
+          default: us-east-1
     - title: Application Namespace
       required:
         - namespace

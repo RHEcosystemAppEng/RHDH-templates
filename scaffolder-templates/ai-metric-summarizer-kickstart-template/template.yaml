@@ -41,7 +41,7 @@ spec:
           title: Description
           type: string
           description: Description of the component
-          default: Chatbot with built-in RAG
+          default: Chatbot with built-in AI Observability Metrics Summarizer
           maxLength: 63
         owner:
           title: Owner
@@ -119,11 +119,6 @@ spec:
           type: string
           description: LLM toleration
           default: nvidia.com/gpu
-        token:
-          title: Hugging Face Token
-          type: string
-          ui:field: Secret
-          description: Enter your Hugging Face token
     - title: Select Safety Model
       properties:
         safety_model:
@@ -160,7 +155,7 @@ spec:
             Developer Hub (e.g., 'default')
   steps:
     - id: fetch-all-rag-blueprint
-      name: Fetch RAG-Blueprint
+      name: Fetch AI Observability Metrics Summarizer-Blueprint
       action: fetch:plain
       input:
         url: https://github.com/RHEcosystemAppEng/AI-Observability-Metrics-Summarizer
@@ -169,7 +164,7 @@ spec:
           - "**/*.jinja"
           - "**/*.jinja2"
     - id: fetch-rag-blueprint-helm
-      name: Fetch Rag-Blueprint Helm Chart
+      name: Fetch AI Observability Metrics Summarizer-Blueprint Helm Chart
       action: fetch:plain
       input:
         url: https://github.com/RHEcosystemAppEng/AI-Observability-Metrics-Summarizer/tree/main/deploy
