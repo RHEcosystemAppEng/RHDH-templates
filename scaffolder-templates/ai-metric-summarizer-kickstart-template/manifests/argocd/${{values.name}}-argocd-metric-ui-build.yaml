@@ -22,9 +22,9 @@ spec:
       #$(if $(LLM_API_TOKEN),--set-json llama-stack.models.$(LLM).apiToken='"$(LLM_API_TOKEN)"',) \
       #$(if $(SAFETY_API_TOKEN),--set-json llama-stack.models.$(SAFETY).apiToken='"$(SAFETY_API_TOKEN)"',) \
       parameters:
-        - name: llama-stack.models.$(LLM).enabled
+        - name: llama-stack.models.${{ value.llm }}.enabled
           value: "true"
-        - name: llama-stack.models.$(SAFETY).enabled
+        - name: llama-stack.models.${{ value.safety }}.enabled
           value: "true"
   destination:
     server: https://kubernetes.default.svc

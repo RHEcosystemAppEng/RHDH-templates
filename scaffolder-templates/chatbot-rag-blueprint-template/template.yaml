@@ -106,9 +106,9 @@ spec:
   
     - title: Select Language model
       required:
-        - llm_model
+        - llm
       properties:
-        llm_model:
+        llm:
           title: Model
           type: string
           description: choose your LLM model
@@ -122,16 +122,6 @@ spec:
           type: string
           description: LLM toleration
           default: nvidia.com/gpu
-        llm_taint:
-          title: Taint GPU-enabled worker node
-          type: string
-          description: What taints identify GPU-enabled worker nodes.
-          default: nvidia.com/gpu
-        token:
-          title: Hugging Face Token
-          type: string
-          ui:field: Secret
-          description: Enter your Hugging Face token
       #   enbableGPUSupport:
       #     title: Enable GPU Support 
       #     type: boolean
@@ -152,7 +142,7 @@ spec:
       #               description: provision your own gpu
     - title: Select Safety Model
       properties:
-        safety_model:
+        safety:
           title: Safety Model
           type: string
           description: Choose your Safety model
@@ -253,16 +243,13 @@ spec:
           description: This is GitOps manifest for ${{ parameters.name }}
           repoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}-gitops.git
           owner: ${{ parameters.owner }}
-          llm_model: ${{ parameters.llm_model }}
+          llm: ${{ parameters.llm }}
           llm_toleration: ${{ parameters.llm_toleration }}
-          llm_taint: ${{ parameters.llm_taint }}
-          safety_model: ${{ parameters.safety_model }}
+          safety: ${{ parameters.safety }}
           safety_toleration: ${{ parameters.safety_toleration }}
-          safety_taint: ${{ parameters.safety_taint }}
-          s3_bucket: ${{ parameters.s3_storage }}
-          s3_userid: ${{ parameters.s3_userid }}
-          s3_password: ${{ parameters.s3_password }}
-          token: ${{ parameters.token }}
+          s3_bucket_name: ${{ parameters.s3_bucket_name }}
+          endpoint_url: ${{ parameters.endpoint_url }}
+          region: ${{ parameters.region }}
           # enbableGPUSupport: ${{ parameters.enbableGPUSupport }}
           # createGPU: ${{ parameters.createGPU }}
     - id: publish-github
