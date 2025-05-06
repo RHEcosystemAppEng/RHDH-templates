@@ -15,11 +15,14 @@ spec:
     helm:
       valueFiles:
         - values.yaml
+-       - charts/llama-stack/values.yaml
       parameters:
         - name: llama-stack.models.${{ values.llm }}.enabled
           value: "true"
         - name: llama-stack.models.${{ values.safety }}.enabled
           value: "${{ values.enable_safety }}"
+        - name: mcp-servers.weather.uri
+          value: "http://${{ values.name }}-mcp-server.weather:8080/sse"
   destination:
     server: https://kubernetes.default.svc
     namespace: ${{ values.namespace }}
