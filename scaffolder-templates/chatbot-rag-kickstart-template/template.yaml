@@ -209,6 +209,9 @@ spec:
       input:
         url: https://github.com/RHEcosystemAppEng/RAG-Blueprint
         targetPath: ./tenant
+        ignorePath:
+          - '**/.github'
+          - '**/.ansible-lint'
         copyWithoutTemplating:
           - '**/*.jinja'
           - '**/*.jinja2'
