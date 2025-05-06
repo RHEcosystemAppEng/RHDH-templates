@@ -138,8 +138,6 @@ spec:
                     const: true
               then:
                 properties:
-                required:
-                  - safety
                   safety:
                     title: Safety Model
                     type: string
@@ -153,6 +151,8 @@ spec:
                     type: string
                     description: toleration
                     default: nvidia.com/gpu
+                required:
+                  - safety
     - title: Configure S3 Storage
       properties:
         s3_bucket_name:
