@@ -20,6 +20,8 @@ spec:
           value: "true"
         - name: llama-stack.models.${{ values.safety }}.enabled
           value: "${{ values.enable_safety }}"
+        - name: llama-stack.mcp-servers.weather.uri
+          value: "http://${{ values.name }}-mcp-servers-weather:8000/sse"
   destination:
     server: https://kubernetes.default.svc
     namespace: ${{ values.namespace }}
