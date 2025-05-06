@@ -18,7 +18,7 @@ spec:
       parameters:
         - name: models.${{ values.llm }}.enabled
           value: "true"
-        - name: models.${{ values.safety }}.enabled
+        - name: llama-stack.models.${{ values.safety || 'llama-guard-3-1b' }}.enabled
           value: "${{ values.enable_safety }}"
         - name: secret.enabled
           value: "false"
