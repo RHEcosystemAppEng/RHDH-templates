@@ -141,6 +141,8 @@ spec:
       #               type: boolean
       #               description: provision your own gpu
     - title: Select Safety Model
+      required:
+        - safety
       properties:
         safety:
           title: Safety Model
@@ -155,11 +157,6 @@ spec:
           type: string
           description: toleration
           default: nvidia.com/gpu
-        safety_taint:
-          title: Safety LLM Taint
-          type: string
-          description: taint
-          default: placeholder
     - title: Configure S3 Storage
       properties:
         s3_bucket_name:

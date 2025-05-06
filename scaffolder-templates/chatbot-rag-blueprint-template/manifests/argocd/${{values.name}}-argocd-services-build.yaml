@@ -14,17 +14,11 @@ spec:
     path: ./helm/llm-service
     helm:
       valueFiles:
-        - values.yaml
-      #$(if $(LLM),--set-json llama-stack.models.$(LLM).enabled='true',) \
-      #$(if $(SAFETY),--set-json llama-stack.models.$(SAFETY).enabled='true',) \
-      #$(if $(LLM_URL),--set-json llama-stack.models.$(LLM).url='"$(LLM_URL)"',) \
-      #$(if $(SAFETY_URL),--set-json llama-stack.models.$(SAFETY).url='"$(SAFETY_URL)"',) \
-      #$(if $(LLM_API_TOKEN),--set-json llama-stack.models.$(LLM).apiToken='"$(LLM_API_TOKEN)"',) \
-      #$(if $(SAFETY_API_TOKEN),--set-json llama-stack.models.$(SAFETY).apiToken='"$(SAFETY_API_TOKEN)"',) \
+        - values-gpu.yaml
       parameters:
-        - name: llama-stack.models.${{ values.llm }}.enabled
+        - name: models.${{ values.llm }}.enabled
           value: "true"
-        - name: llama-stack.models.${{ value.safety }}.enabled
+        - name: models.${{ values.safety }}.enabled
           value: "true"
   destination:
     server: https://kubernetes.default.svc
