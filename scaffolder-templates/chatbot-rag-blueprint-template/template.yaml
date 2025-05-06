@@ -122,41 +122,37 @@ spec:
           type: string
           description: LLM toleration
           default: nvidia.com/gpu
-      #   enbableGPUSupport:
-      #     title: Enable GPU Support 
-      #     type: boolean
-      #     # ui:widget: radio
-      #     description: defaults to cpu
-      # dependencies:
-      #   enbableGPUSupport:
-      #     allOf:
-      #       - if:
-      #           properties: 
-      #             enbableGPUSupport:
-      #               const: true
-      #         then:
-      #           properties:
-      #             createGPU:
-      #               title: Create GPU
-      #               type: boolean
-      #               description: provision your own gpu
-    - title: Select Safety Model
-      required:
-        - safety
+    - title: Enable safety model
       properties:
-        safety:
-          title: Safety Model
-          type: string
-          description: Choose your Safety model
-          default: llama-guard-3-1b
-          enum:
-            - llama-guard-3-1b
-            - llama-guard-3-8b
-        safety_toleration:
-          title: Safety Toleration
-          type: string
-          description: toleration
-          default: nvidia.com/gpu
+        enableSafety:
+          title: Enable Safety
+          type: boolean
+          description: Enable safety model
+          default: true
+      dependencies:
+        enableSafety:
+          allOf:
+            - if:
+                properties:
+                  enableSafety:
+                    const: true
+              then:
+                properties:
+                required:
+                  - safety
+                  safety:
+                    title: Safety Model
+                    type: string
+                    description: Choose your Safety model
+                    default: llama-guard-3-1b
+                    enum:
+                      - llama-guard-3-1b
+                      - llama-guard-3-8b
+                  safety_toleration:
+                    title: Safety Toleration
+                    type: string
+                    description: toleration
+                    default: nvidia.com/gpu
     - title: Configure S3 Storage
       properties:
         s3_bucket_name:
