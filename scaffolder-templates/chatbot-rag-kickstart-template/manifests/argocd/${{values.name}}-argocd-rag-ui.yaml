@@ -15,7 +15,7 @@ spec:
     helm:
       valueFiles:
         - values.yaml
--       - charts/llama-stack/values.yaml
+        - charts/llama-stack/values.yaml
       parameters:
         - name: llama-stack.models.${{ values.llm }}.enabled
           value: "true"
