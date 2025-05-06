@@ -122,13 +122,13 @@ spec:
           type: string
           description: LLM toleration
           default: nvidia.com/gpu
-    - title: Enable safety model
+    - title: Select Safety Model 
       properties:
         enableSafety:
           title: Enable Safety
           type: boolean
           description: Enable safety model
-          default: true
+          default: false
       dependencies:
         enableSafety:
           allOf:
@@ -155,21 +155,35 @@ spec:
                   - safety
     - title: Configure S3 Storage
       properties:
-        s3_bucket_name:
-          title: s3 Bucket Name
-          type: string
-          description: s3 Bucket name
-          default: s3-bucket-name
-        endpoint_url:
-          title: Endpoint URL
-          type: string
-          description: s3 endpoint url
-          default: https://s3.amazonaws.com
-        region:
-          title: Region
-          type: string
-          description: s3 region
-          default: us-east-1
+        enable_s3_bucket:
+          title: Enable S3 Bucket
+          type: boolean
+          description: Enable S3 bucket for storing data
+          default: false
+      dependencies:
+        enable_s3_bucket:
+          allOf:
+            - if:
+                properties:
+                  enable_s3_bucket:
+                    const: true
+              then:
+                properties:
+                  s3_bucket_name:
+                    title: s3 Bucket Name
+                    type: string
+                    description: s3 Bucket name
+                    default: s3-bucket-name
+                  endpoint_url:   
+                    title: Endpoint URL
+                    type: string
+                    description: s3 endpoint url
+                    default: https://s3.amazonaws.com
+                  region:
+                    title: Region
+                    type: string
+                    description: s3 region
+                    default: us-east-1
     - title: Application Namespace
       required:
         - namespace
