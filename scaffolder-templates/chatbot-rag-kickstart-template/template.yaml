@@ -257,6 +257,7 @@ spec:
           s3_bucket_name: ${{ parameters.s3_bucket_name }}
           endpoint_url: ${{ parameters.endpoint_url }}
           region: ${{ parameters.region }}
+          enable_safety: ${{ parameters.enableSafety }}
           # enbableGPUSupport: ${{ parameters.enbableGPUSupport }}
           # createGPU: ${{ parameters.createGPU }}
     - id: publish-github
