@@ -1,9 +1,9 @@
 # Edit the template parameters below to see how they will render in the scaffolder form UI
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
-# This template is used to create a chatbot rag blueprint using llamastack with vllm
+# This template is used to create a chatbot rag kickstart using llamastack with vllm
 metadata:
-  name: chatbot-rag-blueprint-template
+  name: chatbot-rag-kickstart-template
   title: Deploy RAG Reference Architecture using LLaMA Stack, OpenShift AI, and PGVector via GitOps
   description: This template will ask some basic information about your application and create a GitOps repository with the necessary resources to deploy the Rag Chatbot application using LLaMA Stack, OpenShift AI, and PGVector.
   tags:
@@ -203,8 +203,8 @@ spec:
           default: default
           description: Enter the logical name of the Argo CD instance as configured in Developer Hub (e.g., 'default')
   steps:
-    - id: fetch-all-rag-blueprint
-      name: Fetch RAG-Blueprint
+    - id: fetch-all-rag-kickstart
+      name: Fetch RAG-kickstart
       action: fetch:plain
       input:
         url: https://github.com/RHEcosystemAppEng/RAG-Blueprint
@@ -212,8 +212,8 @@ spec:
         copyWithoutTemplating:
           - '**/*.jinja'
           - '**/*.jinja2'
-    - id: fetch-rag-blueprint-helm
-      name: Fetch Rag-Blueprint Helm Chart
+    - id: fetch-rag-kickstart-helm
+      name: Fetch Rag-kickstart Helm Chart
       action: fetch:plain
       input:
         url: https://github.com/RHEcosystemAppEng/RAG-Blueprint/tree/main/deploy
@@ -260,7 +260,7 @@ spec:
           # enbableGPUSupport: ${{ parameters.enbableGPUSupport }}
           # createGPU: ${{ parameters.createGPU }}
     - id: publish-github
-      name: Publish Rag-Blueprint to Github
+      name: Publish Rag-kickstart to Github
       action: publish:github
       if: ${{ parameters.hostType === 'GitHub' }}
       input:
