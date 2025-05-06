@@ -20,6 +20,8 @@ spec:
           value: "true"
         - name: models.${{ values.safety }}.enabled
           value: "true"
+        - name: secret.enabled
+          value: "false"
   destination:
     server: https://kubernetes.default.svc
     namespace: ${{ values.namespace }}
