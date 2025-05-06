@@ -209,12 +209,16 @@ spec:
       input:
         url: https://github.com/RHEcosystemAppEng/RAG-Blueprint
         targetPath: ./tenant
-        ignorePath:
-          - '**/.github'
-          - '**/.ansible-lint'
         copyWithoutTemplating:
           - '**/*.jinja'
           - '**/*.jinja2'
+    - id: deleteFiles
+      name: Delete unwanted files
+      action: fs:delete
+      input:
+        files:
+          - ./tenant/.github
+          - ./tenant/.ansible-lint
     - id: fetch-rag-kickstart-helm
       name: Fetch Rag-kickstart Helm Chart
       action: fetch:plain
