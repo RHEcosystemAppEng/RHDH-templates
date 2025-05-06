@@ -18,7 +18,7 @@ spec:
       parameters:
         - name: llama-stack.models.${{ values.llm }}.enabled
           value: "true"
-        - name: llama-stack.models.${{ values.safety || 'llama-guard-3-1b' }}.enabled
+        - name: llama-stack.models.${{ values.safety }}.enabled
           value: "${{ values.enable_safety }}"
   destination:
     server: https://kubernetes.default.svc
