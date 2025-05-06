@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ${{ values.name }}-services
+  name: ${{ values.name }}-mcp-servers
   namespace: openshift-gitops
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -11,17 +11,7 @@ spec:
   source:
     repoURL: ${{values.repoURL}}
     targetRevision: HEAD
-    path: ./helm/llm-service
-    helm:
-      valueFiles:
-        - values-gpu.yaml
-      parameters:
-        - name: models.${{ values.llm }}.enabled
-          value: "true"
-        - name: models.${{ values.safety }}.enabled
-          value: "true"
-        - name: secret.enabled
-          value: "false"
+    path: ./helm/mcp-servers
   destination:
     server: https://kubernetes.default.svc
     namespace: ${{ values.namespace }}
