@@ -259,7 +259,7 @@ spec:
           owner: ${{ parameters.owner }}
           llm: ${{ parameters.llm }}
           llm_toleration: ${{ parameters.llm_toleration }}
-          safety: ${{ parameters.safety or llama-guard-3-1b}}
+          safety: ${{ parameters.safety }}
           safety_toleration: ${{ parameters.safety_toleration }}
           s3_bucket_name: ${{ parameters.s3_bucket_name }}
           endpoint_url: ${{ parameters.endpoint_url }}

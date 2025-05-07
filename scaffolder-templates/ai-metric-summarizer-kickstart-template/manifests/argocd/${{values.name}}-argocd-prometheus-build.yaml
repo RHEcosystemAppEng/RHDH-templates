@@ -12,18 +12,6 @@ spec:
     repoURL: ${{values.repoURL}}
     targetRevision: HEAD
     path: ./helm/prometheus
-    helm:
-      valueFiles:
-        - values.yaml
-      #$(if $(LLM),--set-json llama-stack.models.$(LLM).enabled='true',) \
-      #$(if $(SAFETY),--set-json llama-stack.models.$(SAFETY).enabled='true',) \
-      #$(if $(LLM_URL),--set-json llama-stack.models.$(LLM).url='"$(LLM_URL)"',) \
-      #$(if $(SAFETY_URL),--set-json llama-stack.models.$(SAFETY).url='"$(SAFETY_URL)"',) \
-      #$(if $(LLM_API_TOKEN),--set-json llama-stack.models.$(LLM).apiToken='"$(LLM_API_TOKEN)"',) \
-      #$(if $(SAFETY_API_TOKEN),--set-json llama-stack.models.$(SAFETY).apiToken='"$(SAFETY_API_TOKEN)"',) \
-      parameters:
-        - name: llm_models
-          value: ${{ values.llm }}
   destination:
     server: https://kubernetes.default.svc
     namespace: ${{ values.namespace }}
