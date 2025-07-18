@@ -1,0 +1,131 @@
+# Edit the template parameters below to see how they will render in the scaffolder form UI
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+# This template is used to create a chatbot rag kickstart using llamastack with vllm
+metadata:
+  name: recommender-system-kickstart-template
+  title: Deploy Product Recommender System application using Pytorch, semantic search, OpenShift AI, and PGVector via GitOps
+  description: This template will ask some basic information about your application and create a GitOps repository with the necessary resources to deploy the Product Recommender System application using OpenShift AI, and PGVector.
+  tags:
+    - machine-learning
+    - pgvector
+    - openshift-ai
+    - gitops
+    - python
+    - pytorch
+    - semantic-search
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+spec:
+  owner: rhdh
+  type: service
+  # These parameters are used to generate the input form in the frontend, and are
+  # used to gather input data for the execution of the template.
+  parameters:
+    - title: Application Information
+      required:
+        - name
+        - owner
+      properties:
+        name:
+          title: Name
+          type: string
+          description: Unique identifier for the component
+          default: recommender-system-app
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+        description:
+          title: Description
+          type: string
+          description: Description of the component
+          default: Product Recommender System application
+          maxLength: 63
+        owner:
+          title: Owner
+          type: string
+          description: Owner of the component
+          ui:field: OwnerPicker
+          default: user:user1
+          ui:options:
+            catalogFilter:
+              kind:
+                - Group
+                - User
+              readonly: false
+    - title: Application Repository Location
+      required:
+        - hostType
+        - repoOwner
+        - repoName
+        - branch
+      properties:
+        hostType:
+          title: Host Type
+          type: string
+          enum:
+            - GitHub
+            - GitLab
+          default: GitLab
+        repoOwner:
+          title: Repository Owner
+          type: string
+          default: development
+          ui:help: The organization, user or project that this repo will belong to
+        repoName:
+          title: Repository Name
+          type: string
+          default: recommender-system-app
+        branch:
+          title: Repository Default Branch
+          type: string
+          default: main
+      dependencies:
+        hostType:
+          oneOf:
+            - required:
+                - githubServer
+              properties:
+                hostType:
+                  const: GitHub
+                githubServer:
+                  title: Repository Server
+                  type: string
+                  default: github.com
+                  ui:help: "You can also provide the on-prem github server, example: github-github.apps.cluster-ljg9z.sandbox219.opentlc.com"
+            - required:
+                - gitlabServer
+              properties:
+                hostType:
+                  const: GitLab
+                gitlabServer:
+                  title: Repository Server
+                  type: string
+                  default: gitlab.com
+                  ui:help: "You can also provide the on-prem gitlab server, example: gitlab-gitlab.apps.cluster-ljg9z.sandbox219.opentlc.com"
+    - title: Application Namespace
+      required:
+        - namespace
+      properties:
+        namespace:
+          title: Namespace
+          type: string
+          description: The namespace where the application will be deployed
+          default: recommender-system-app
+    - title: Argo CD Configuration
+      required:
+        - argoInstance
+      properties:
+        argoInstance:
+          title: Argo CD Instance Name
+          type: string
+          default: main
+          description: Enter the logical name of the Argo CD instance as configured in Developer Hub (e.g., 'default')
+  steps:
+    - id: fetch-all-recommender-system-kickstart
+      name: Fetch recommender-system-kickstart
+      action: fetch:plain
+      input:
+        url: https://github.com/rh-ai-kickstart/product-recommender-system
+        targetPath: ./tenant
+

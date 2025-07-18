@@ -9,3 +9,4 @@ spec:
     - scaffolder-templates/ai-metric-summarizer-kickstart-template/template.yaml
     - scaffolder-templates/chatbot-rag-kickstart-template/template.yaml
     - scaffolder-templates/ai-virtual-agent-kickstart-template/template.yaml
+    - scaffolder-templates/recommender-system-kickstart-template/template.yaml
