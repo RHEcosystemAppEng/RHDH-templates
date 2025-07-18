@@ -1,0 +1,16 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ (values.name + '-kickstart') | dump }}
+  namespace: default
+  description: ${{ (values.description + ' - ' + values.name) | dump }}
+  annotations:
+    argocd/app-selector: rht-gitops.com/janus-argocd=${{values.component_id}}-bootstrap
+    backstage.io/source-location: url:https://${{values.host}}/${{values.destination}}
+    gitlab.com/project-slug: ${{ values.destination }}
+    backstage.io/techdocs-ref: url:https://${{values.host}}/${{values.destination}}
+spec:
+  type: service
+  lifecycle: production
+  owner: group:${{ values.owner | dump }}
+
