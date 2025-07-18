@@ -1,0 +1,50 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ${{ values.name }}
+  namespace: janus-argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: ${{ values.name }}-bootstrap
+  source:
+    repoURL: ${{values.repoURL}}
+    targetRevision: HEAD
+    path: ./helm/product-recommender-system
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ${{ values.namespace }}
+  ignoreDifferences:
+    - group: "*"
+      jqPathExpressions:
+        - '.imagePullSecrets[] | select(.name | contains("-dockercfg-"))'
+      kind: ServiceAccount
+    - group: kubeflow.org
+      jqPathExpressions:
+        - '.spec.template.spec.containers[] | select(.name == "oauth-proxy")'
+        - '.spec.template.spec.volumes[] | select(.name | IN("trusted-ca", "oauth-config", "tls-certificates"))'
+        - '.spec.template.spec.containers[] | select(.name != "oauth-proxy").env[] | select(.name | IN("PIP_CERT", "REQUESTS_CA_BUNDLE", "SSL_CERT_FILE", "PIPELINES_SSL_SA_CERTS", "GIT_SSL_CAINFO"))'
+        - '.spec.template.spec.containers[] | select(.name != "oauth-proxy").volumeMounts[] | select(.name == "trusted-ca")'
+      kind: Notebook
+    - group: route.openshift.io
+      jsonPointers:
+        - /metadata/annotations/openshift.io~1host.generated
+        - /spec/alternateBackends
+      kind: Route
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+      - CreateNamespace=true
+    retry:
+      limit: -1
+      backoff:
+        duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
+        factor: 2 # a factor to multiply the base duration after each failed retry
+        maxDuration: 2m # the maximum amount of time allowed for the backoff strategy

@@ -1,7 +1,7 @@
 # Edit the template parameters below to see how they will render in the scaffolder form UI
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
-# This template is used to create a chatbot rag kickstart using llamastack with vllm
+# This template is used to create a chatbot recommender system kickstart
 metadata:
   name: recommender-system-kickstart-template
   title: Deploy Product Recommender System application using Pytorch, semantic search, OpenShift AI, and PGVector via GitOps
@@ -128,4 +128,140 @@ spec:
       input:
         url: https://github.com/rh-ai-kickstart/product-recommender-system
         targetPath: ./tenant
+    - id: deleteFiles
+      name: Delete unwanted files
+      action: fs:delete
+      input:
+        files:
+          - ./tenant/.github
+    - id: fetch-recommender-system-kickstart-helm
+      name: Fetch recommender-system-kickstart Helm Chart
+      action: fetch:plain
+      input:
+        url: https://github.com/rh-ai-kickstart/product-recommender-system/tree/main/helm
+        targetPath: ./tenant-gitops
+    - id: fetch-skeleton
+      name: Fetch catalog-info from local Template
+      action: fetch:template
+      input:
+        url: ./skeleton
+        targetPath: ./tenant-gitops
+        values:
+          name: ${{ parameters.name }}
+          description: Deploy Product Recommender System application using Pytorch, semantic search, OpenShift AI, and PGVector via GitOps
+          owner: ${{ parameters.repoOwner }}
+          model: ${{ parameters.model }}
+          destination: ${{ parameters.repoOwner }}/${{ parameters.name }}
+    - id: fetch-helm-template
+      name: Fetch Helm Chart from local Template
+      action: fetch:template
+      input:
+        url: ./manifests/helm/templates
+        targetPath: ./tenant-gitops/helm/recommender-system/templates
+    - id: fetch-argocd
+      name: Fetch Argo CD Resources from Local Template
+      action: fetch:template
+      input:
+        url: ./manifests/argocd
+        targetPath: ./tenant-gitops/argocd
+        values:
+          name: ${{ parameters.name }}
+          namespace: ${{ parameters.namespace }}
+          description: This is GitOps manifest for ${{ parameters.name }}
+          repoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}-gitops.git
+          owner: ${{ parameters.owner }}
+          bucket_name: ${{ parameters.bucket_name }}
+          endpoint_url: ${{ parameters.endpoint_url }}
+          region: ${{ parameters.region }}
+    - id: publish-github
+      name: Publish recommender-system-kickstart to Github
+      action: publish:github
+      if: ${{ parameters.hostType === 'GitHub' }}
+      input:
+        repoUrl: ${{ parameters.githubServer }}?owner=${{ parameters.repoOwner }}&repo=${{ parameters.repoName }}
+        sourcePath: ./tenant
+        allowedHosts: ["${{ parameters.githubServer }}"]
+        description: This is source repository for ${{ parameters.name }}
+        namespace: ${{ parameters.namespace }}
+        repoVisibility: "public"
+        skipExisting: true
+        defaultBranch: "main"
+        protectDefaultBranch: false
+    - id: publish-gitlab
+      name: Publish recommender-system-kickstart to Gitlab
+      action: publish:gitlab
+      if: ${{ parameters.hostType === 'GitLab' }}
+      input:
+        repoUrl: ${{ parameters.gitlabServer }}?owner=${{ parameters.repoOwner }}&repo=${{ parameters.repoName }}
+        sourcePath: ./tenant
+        allowedHosts: ["${{ parameters.gitlabServer }}"]
+        description: This is source repository for ${{ parameters.name }}
+        namespace: ${{ parameters.namespace }}
+        repoVisibility: "public"
+        skipExisting: true
+        defaultBranch: "main"
+        protectDefaultBranch: false
+    - id: publish-github-gitops
+      name: Publish GitOps to Github
+      action: publish:github
+      if: ${{ parameters.hostType === 'GitHub' }}
+      input:
+        repoUrl: ${{ parameters.githubServer }}?owner=${{ parameters.repoOwner }}&repo=${{ parameters.repoName }}-gitops
+        sourcePath: ./tenant-gitops
+        allowedHosts: ["${{ parameters.githubServer }}"]
+        description: This is GitOps repository for ${{ parameters.name }}
+        repoVisibility: "public"
+        skipExisting: true
+        defaultBranch: "main"
+        protectDefaultBranch: false
+    - id: publish-gitlab-gitops
+      name: Publish GitOps Repository to Gitlab
+      action: publish:gitlab
+      if: ${{ parameters.hostType === 'GitLab' }}
+      input:
+        repoUrl: ${{ parameters.gitlabServer }}?owner=${{ parameters.repoOwner }}&repo=${{ parameters.repoName }}-gitops
+        sourcePath: ./tenant-gitops
+        allowedHosts: ["${{ parameters.gitlabServer }}"]
+        description: This is GitOps repository for ${{ parameters.name }}
+        namespace: ${{ parameters.namespace }}
+        repoVisibility: "public"
+        skipExisting: true
+        defaultBranch: "main"
+        protectDefaultBranch: false
+    - id: wait-for-github-repository
+      name: Waiting for Repository Availability
+      action: "debug:wait"
+      input:
+        seconds: 3
+    - id: register
+      name: Register
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps['publish-github-gitops'].output.repoContentsUrl if steps['publish-github-gitops'].output else steps['publish-gitlab-gitops'].output.repoContentsUrl }}
+        catalogInfoPath: "/catalog-info.yaml"
+    - id: create-argocd-resources
+      name: Create ArgoCD Resources
+      action: argocd:create-resources
+      input:
+        appName: ${{ parameters.name }}-bootstrap
+        argoInstance: ${{ parameters.argoInstance }}
+        namespace: janus-argocd
+        repoUrl: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}-gitops.git
+        path: "argocd/"
 
+  output:
+    links:
+      # SED_APP_SUPPORT_START
+      - title: Source Repository
+        url: ${{ steps['publish-github'].output.remoteUrl if steps['publish-github'].output else steps['publish-gitlab'].output.remoteUrl }}
+      # SED_APP_SUPPORT_END
+      - title: GitOps Repository
+        url: ${{ steps['publish-github-gitops'].output.remoteUrl if steps['publish-github-gitops'].output else steps['publish-gitlab-gitops'].output.remoteUrl }}
+      # SED_APP_SUPPORT_START
+      - title: Open Component in Catalog
+        icon: catalog
+        entityRef: ${{ steps['register'].output.entityRef }}
+      # SED_APP_SUPPORT_END
+      - title: Open GitOps Resource in Catalog
+        icon: catalog
+        entityRef: ${{ steps['register-gitops'].output.entityRef }}
