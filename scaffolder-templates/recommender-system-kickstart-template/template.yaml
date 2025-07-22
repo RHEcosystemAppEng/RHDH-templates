@@ -157,7 +157,7 @@ spec:
       action: fetch:template
       input:
         url: ./manifests/helm/templates
-        targetPath: ./tenant-gitops/helm/recommender-system/templates
+        targetPath: ./tenant-gitops/helm/product-recommender-system/templates
     - id: fetch-argocd
       name: Fetch Argo CD Resources from Local Template
       action: fetch:template
