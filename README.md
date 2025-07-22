@@ -72,8 +72,6 @@ Set up your Hugging Face authentication:
 
 ---
 
-
-
 ### 2. Login to the Developer Hub
 
 <img src="images/dh-dashboard.jpg" alt="Create ai-ckstart secret" width="300">
@@ -105,7 +103,7 @@ Set up your Hugging Face authentication:
 ---
 ### 4. Available Templates
 
-Once registered, you'll see these AI-powered templates in the Create page:
+Once registered, you'll see these AI-powered templates in the Catalog->Template page:
 
 - **🤖 RAG Chatbot Blueprint** (`chatbot-rag-kickstart-template`)  
   Deploy a complete RAG (Retrieval Augmented Generation) architecture using LLaMA Stack, OpenShift AI, and PGVector. Includes document ingestion pipeline and vector database for intelligent question-answering.
@@ -116,28 +114,55 @@ Once registered, you'll see these AI-powered templates in the Create page:
 - **📊 AI Metrics Summarizer** (`ai-metric-summarizer-kickstart-template`)  
   Build a specialized chatbot that analyzes AI model performance metrics from Prometheus and generates human-readable summaries using LLaMA models. Ideal for AI observability and monitoring.
 
-Click any template to launch the guided form and customize your AI application deployment.
 ---
 ### 5. Launch a Template
 
-1. **Access the template**:
-   - Click **"chatbot-rag-kickstart-template"** to go to the template details
+Once you've registered the templates, follow these steps to deploy an AI application:
 
+#### **Navigate to Self-Service Catalog**
+- From the Developer Hub sidebar, click **"Create"**
+- You'll see the available AI templates listed
 
-    <img src="images/launch-template.jpg" alt="Create ai-ckstart secret" width="300">
+#### **Choose Your Template**
+Select one of the registered templates:
+- **RAG Chatbot Blueprint** - for document-based Q&A systems
+- **AI Virtual Agent** - for conversational AI assistants  
+- **AI Metrics Summarizer** - for AI observability and monitoring
 
-  2. **Start the guided form**:
-      - Click **"Launch Template"** to open the guided template form
-  
-      <img src="images/start-template.jpg" alt="Create ai-ckstart secret" width="300">
+#### **Configure Template Parameters**
+Fill in the guided form with your specifications:
 
----
+**Application Information:**
+- **Name**: Unique identifier for your component (e.g., `my-ai-chatbot`)
+- **Owner**: Select from available users/groups
+- **Description**: Brief description of your application
 
-### 5. Fill in the Form and Create a New Component
+**Repository Details:**
+- **Host Type**: Choose GitHub or GitLab
+- **Repository Owner**: Your organization or username
+- **Repository Name**: Name for the source repository
+- **Namespace**: Kubernetes namespace for deployment
 
-- Provide the required inputs (name, repo, owner, etc.)
-- Click **"Create"**
-- Once complete, follow the output links to:
-  - View the source repository
-  - See the component in the catalog
-  - Review Argo CD
+**AI Model Configuration:**
+- **Language Model**: Select from available LLaMA variants
+- **Safety Model**: Optional LLaMA Guard for content filtering
+- **GPU Tolerance**: Configure hardware requirements
+
+#### **Review and Create**
+- Review all configured parameters
+- Click **"Review"** to validate your inputs
+- Click **"Create"** to initiate the template deployment
+
+#### **Automatic Deployment Process**
+The template will automatically:
+1. **Build** the software component with your specifications
+2. **Publish** source and GitOps repositories to your chosen platform
+3. **Register** the component in the Developer Hub catalog
+4. **Deploy** via ArgoCD using GitOps workflows
+
+#### **Access Your Application**
+Once complete, use the provided links to:
+- View source repository
+- Monitor GitOps deployment  
+- Access the component in the catalog
+- Review ArgoCD applications
