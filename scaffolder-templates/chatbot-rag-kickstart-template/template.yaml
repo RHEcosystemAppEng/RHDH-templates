@@ -159,7 +159,7 @@ spec:
           title: Ingestion Pipeline Name
           type: string
           description: Ingestion pipeline name
-          default: zippity-zoo-vector-db
+          default: zippity-zoo-vector-db//need to change this to the name of the vector db
           ui:disabled: true
         injection_pipeline_version:
           title: Ingestion Pipeline Version

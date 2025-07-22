@@ -1,95 +1,122 @@
-# 🧩 Using RHEcosystemAppEng/RHDH-templates as Golden Templates in Red Hat Developer Hub
+This guide provides step-by-step instructions for installing the Red Hat Golden Template path using the RHEcosystemAppEng/RHDH-templates repository.
 
-This guide walks you through using [RHEcosystemAppEng/RHDH-templates](https://github.com/RHEcosystemAppEng/RHDH-templates) as **golden templates** inside your own instance of [Red Hat Developer Hub (RHDH)](https://redhat-developer-hub-openshift-gitops.apps.gpu.osdu.opdev.io/).
 
 ---
 
 ## ✅ Prerequisites
 
-- Access to a running RHDH instance  
-  👉 [https://redhat-developer-hub-openshift-gitops.apps.gpu.osdu.opdev.io](https://redhat-developer-hub-openshift-gitops.apps.gpu.osdu.opdev.io)
-- Access to GitHub and permission to use the `RHEcosystemAppEng/RHDH-templates` repository
-- To use **Hugging Face**, a token must be securely provided. You can do this with or without Vault:
+Before getting started, ensure you have the following:
 
+- **OpenShift CLI (oc)**: [Download and install](https://developers.redhat.com/learning/learn:openshift:download-and-install-red-hat-openshift-cli/resource/resources:download-and-install-oc) Openshift command-line interface
+- **Platform Access**: Access to either [TAP](https://docs.redhat.com/en/documentation/red_hat_trusted_application_pipeline/1.0/html-single/installing_red_hat_trusted_application_pipeline/index) or a running RHDH instance. Helm Chart installation available [here](https://github.com/redhat-ai-dev/ai-rhdh-installer)
+-  **Hugging Face API Token**: A valid authentication token from [Hugging Face](https://huggingface.co/docs/hub/en/security-tokens)
 ---
+### 🚀 Step-by-Step Instructions
+
+### 1. Create a Kubernetes secret for HF token
+
 
 ## 🔓 Without Vault
-Manually create a Kubernetes Secret:
+Set up your Hugging Face authentication:
+1. Configure your token as an environment variable:
+   ```bash
+   export HF_TOKEN=<your huggingface token>
+   ```
+   Replace <your-huggingface-token> with your actual Hugging Face API token.
 
-```bash
-export HF_TOKEN=<your huggingface token>
-kubectl create secret generic huggingface-secret \
-  -n <your-namespace> \
-  --from-literal=HF_TOKEN=$HF_TOKEN
-```
+2. Create the secret in your OpenShift namespace:
+   ```bash
+   oc create secret generic huggingface-secret \
+     -n <your-namespace> \
+     --from-literal=HF_TOKEN=$HF_TOKEN
+   ```
+   Replace <your-namespace> with the namespace where your RAG application is deployed.
 
-Or use another secure secrets solution.
 
 ---
 
-## 🔐 With Vault + External Secrets Operator
+### 🔐 With Vault + External Secrets Operator
+> **Note**: Use this approach if you have Vault and External Secrets Operator configured in your cluster for centralized secret management.
 
-1. **Log in to Vault**:
-   - Get the Vault route:
-     ```bash
-     oc get route -n vault
-     ```
-   - Retrieve the Vault token:
-     ```bash
-     oc get secret -n vault vault-token -o jsonpath="{.data.token}" | base64 --decode
-     ```
+1. **Access Vault UI**:
+   ```bash
+   # Get the Vault route
+   oc get route -n vault
+   
+   # Get the Vault token
+   oc get secret -n vault vault-token -o jsonpath="{.data.token}" | base64 --decode
+   ```
+   Open the Vault route in your browser and log in using the token method with the retrieved token.
+   
+   <img src="images/vaultlogin.jpg" alt="Vault Login Screen" width="300">
 
-2. **Manually create the secret in the Vault UI**:
+2. **Create the secret in Vault**:
    - Select the **KV** secret engine
-   - Navigate to the path: `secret/janusidp`
-   - On the right-hand panel, click **"Create secret"**
-   - Specify the path as: `dhtemplate` (which becomes `secret/janusidp/dhtemplate`)
-   - Under "Secret Data":
-     - **Key**: `token`
-     - **Value**: your Hugging Face token
-   - Click **Save**
+   - Navigate to: `secret/`
+   - Set path as: `secrets/ai-kickstart`
+   - Click **Create secret** (Shown on image 1)
+   - Add secret data:
+     - **Key**: `hf_token`
+     - **Value**: `<your-huggingface-token>`
+   - Click **Save** (Shown on image 2)
+  
+      (1)
 
-  **The ExternalSecret will map `token` → Kubernetes key `HF_TOKEN`**
+      <img src="images/create-secret.jpg" alt="Create ai-ckstart secret" width="300">
+      
+      (2)
 
----
-
-## 🚀 Step-by-Step Instructions
-
-### 1. Open the Developer Hub
-
-Visit your RHDH instance: https://redhat-developer-hub-openshift-gitops.apps.gpu.osdu.opdev.io
-
-
----
-
-### 2. Go to the Catalog Import Page
-
-- From the sidebar, click **"Catalog"**
-- Then click **"Register Existing Component"** (or **"Import"**)
+      <img src="images/ai-kickstart.jpg" alt="Create ai-ckstart secret" width="300">  
+      
+  > **Note**: **The ExternalSecret Operator will map `hf_token` → Kubernetes key `HF_TOKEN`**
 
 ---
 
-### 3. Register the Golden Template Repository
-
-Paste this URL into the import input field:
-
-[https://github.com/RHEcosystemAppEng/RHDH-templates/blob/main/showcase-templates.yaml](https://github.com/RHEcosystemAppEng/RHDH-templates/blob/main/showcase-templates.yaml)
 
 
-> 📝 This file registers all golden templates defined in the repository.
+### 2. Login to the Developer Hub
 
-Click **"Analyze"** and then **"Import"** to complete registration.
+<img src="images/dh-dashboard.jpg" alt="Create ai-ckstart secret" width="300">
 
 ---
 
-### 4. Use a Template from the Create Page
+### 3. Register an existing component
 
-- Click **"Create"** in the sidebar
-- You’ll now see new golden templates like:
+1. **Navigate to Catalog**:
+   - From the sidebar, click **"Catalog"**
+   - Click **"Create"**
+ 
+      <img src="images/dh-catalog-view.jpg" alt="Create ai-ckstart secret" width="300">
+2. **Register existing component**:
+   - Click **"Register Existing Component"**
 
-  - RAG Chatbot Blueprint
+3. **Import the template repository**:
+   - Paste this URL into the input field:
+     ```
+     https://github.com/RHEcosystemAppEng/RHDH-templates/blob/main/showcase-templates.yaml
+     ```
+   - Click **"Analyze"**
+   
 
-Click a template to launch the guided form.
+
+      <img src="images/register-template.jpg" alt="Create ai-ckstart secret" width="300">
+
+   - Click **"Import"** to complete registration
+ 
+      <img src="images/import-template.jpg" alt="Create ai-ckstart secret" width="300">
+---
+### 4. Launch a Template
+
+1. **Access the template**:
+   - Click **"chatbot-rag-kickstart-template"** to go to the template details
+
+
+    <img src="images/launch-template.jpg" alt="Create ai-ckstart secret" width="300">
+
+  2. **Start the guided form**:
+      - Click **"Launch Template"** to open the guided template form
+  
+      <img src="images/start-template.jpg" alt="Create ai-ckstart secret" width="300">
 
 ---
 
