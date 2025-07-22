@@ -96,8 +96,6 @@ Set up your Hugging Face authentication:
      https://github.com/RHEcosystemAppEng/RHDH-templates/blob/main/showcase-templates.yaml
      ```
    - Click **"Analyze"**
-   
-
 
       <img src="images/register-template.jpg" alt="Create ai-ckstart secret" width="300">
 
@@ -105,7 +103,22 @@ Set up your Hugging Face authentication:
  
       <img src="images/import-template.jpg" alt="Create ai-ckstart secret" width="300">
 ---
-### 4. Launch a Template
+### 4. Available Templates
+
+Once registered, you'll see these AI-powered templates in the Create page:
+
+- **🤖 RAG Chatbot Blueprint** (`chatbot-rag-kickstart-template`)  
+  Deploy a complete RAG (Retrieval Augmented Generation) architecture using LLaMA Stack, OpenShift AI, and PGVector. Includes document ingestion pipeline and vector database for intelligent question-answering.
+
+- **🎯 AI Virtual Agent** (`ai-virtual-agent-kickstart-template`)  
+  Create an intelligent virtual assistant powered by OpenShift AI and PGVector. Perfect for building conversational AI applications with advanced reasoning capabilities.
+
+- **📊 AI Metrics Summarizer** (`ai-metric-summarizer-kickstart-template`)  
+  Build a specialized chatbot that analyzes AI model performance metrics from Prometheus and generates human-readable summaries using LLaMA models. Ideal for AI observability and monitoring.
+
+Click any template to launch the guided form and customize your AI application deployment.
+---
+### 5. Launch a Template
 
 1. **Access the template**:
    - Click **"chatbot-rag-kickstart-template"** to go to the template details
