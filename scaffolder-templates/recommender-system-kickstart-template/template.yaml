@@ -139,7 +139,7 @@ spec:
       action: fetch:plain
       input:
         url: https://github.com/rh-ai-kickstart/product-recommender-system/tree/main/helm
-        targetPath: ./tenant-gitops
+        targetPath: ./tenant-gitops/helm
     - id: fetch-skeleton
       name: Fetch catalog-info from local Template
       action: fetch:template
