@@ -12,5 +12,5 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: group:${{ values.owner | dump }}
+  owner: ${{ values.owner | dump }}
 
