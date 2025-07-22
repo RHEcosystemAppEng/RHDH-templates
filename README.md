@@ -105,7 +105,7 @@ Set up your Hugging Face authentication:
 
 Once registered, you'll see these AI-powered templates in the Catalog->Template page:
 
-- **🤖 RAG Chatbot Blueprint** (`chatbot-rag-kickstart-template`)  
+- **🤖 RAG Chatbot Kickstart** (`chatbot-rag-kickstart-template`)  
   Deploy a complete RAG (Retrieval Augmented Generation) architecture using LLaMA Stack, OpenShift AI, and PGVector. Includes document ingestion pipeline and vector database for intelligent question-answering.
 
 - **🎯 AI Virtual Agent** (`ai-virtual-agent-kickstart-template`)  
@@ -125,7 +125,7 @@ Once you've registered the templates, follow these steps to deploy an AI applica
 
 #### **Choose Your Template**
 Select one of the registered templates:
-- **RAG Chatbot Blueprint** - for document-based Q&A systems
+- **Chatbot-Rag Kickstart** - for RAG document-based Q&A systems
 - **AI Virtual Agent** - for conversational AI assistants  
 - **AI Metrics Summarizer** - for AI observability and monitoring
 
