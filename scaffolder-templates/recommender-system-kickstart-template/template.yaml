@@ -149,7 +149,7 @@ spec:
         values:
           name: ${{ parameters.name }}
           description: Deploy Product Recommender System application using Pytorch, semantic search, OpenShift AI, and PGVector via GitOps
-          owner: ${{ parameters.repoOwner }}
+          owner: ${{ parameters.owner }}
           model: ${{ parameters.model }}
           destination: ${{ parameters.repoOwner }}/${{ parameters.name }}
     - id: fetch-helm-template
