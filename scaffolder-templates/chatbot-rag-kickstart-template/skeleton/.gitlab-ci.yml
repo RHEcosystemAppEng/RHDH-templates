@@ -5,7 +5,9 @@ stages:
 variables:
   DOCKER_DRIVER: overlay2
   DOCKER_TLS_CERTDIR: "/certs"
+  # DEMO: Uses GitLab Container Registry with automatic authentication
   CONTAINER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+  # No manual secrets needed - uses CI_REGISTRY_* automatically!
 
 services:
   - docker:24.0.5-dind

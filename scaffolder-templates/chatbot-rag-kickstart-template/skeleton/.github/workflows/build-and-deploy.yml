@@ -7,8 +7,10 @@ on:
     branches: [ main ]
 
 env:
+  # DEMO: Uses GitHub Container Registry with automatic authentication
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  # No manual secrets needed - uses GITHUB_TOKEN automatically!
 
 jobs:
   build-and-deploy:

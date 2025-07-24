@@ -39,3 +39,16 @@ webhook:
     enabled: false
   gitlab:
     enabled: true
+
+# Secrets Configuration - AUTO-GENERATED FOR DEMO
+secrets:
+  # Auto-generate webhook secrets for demo
+  autoGenerate: true
+  
+  # Git credentials (disabled for demo - uses HTTPS with tokens)
+  gitCredentials:
+    enabled: false
+  
+  # Container registry (uses platform defaults for demo)
+  containerRegistry:
+    enabled: false
