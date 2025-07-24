@@ -16,34 +16,47 @@ This repository has been enhanced with a complete CI/CD integration that automat
 
 ## Quick Start
 
-### 1. Initial Setup
-After deploying the template, you'll have two repositories:
-- **Source Repository** (this repo): Contains your application code
-- **GitOps Repository**: Contains deployment configurations
+### 🎯 For Demo/Proof-of-Concept (Recommended)
 
-### 2. Configure Webhooks
-Follow the detailed steps in [`docs/ci-cd-integration.md`](./docs/ci-cd-integration.md) to:
-- Set up webhook secrets
-- Configure repository webhooks
-- Connect CI/CD variables
+Use the **automated demo setup** for the fastest experience:
 
-### 3. Start Developing
-Once configured, simply:
 ```bash
-# Make changes to your Streamlit dashboard
-vi main.py
-
-# Commit and push
-git add .
-git commit -m "Update dashboard UI"
-git push origin main
+./scripts/demo-setup.sh
 ```
 
-The CI/CD pipeline will automatically:
-1. ✅ Build a new container image
-2. ✅ Push it to the registry
-3. ✅ Update the GitOps repository
-4. ✅ Trigger ArgoCD to deploy the new version
+**Demo Features:**
+- ✅ **Zero manual secrets** - auto-generated webhook tokens
+- ✅ **Platform defaults** - uses GitHub/GitLab built-in authentication  
+- ✅ **2-minute setup** - just add webhook to repository
+- ✅ **Instant gratification** - perfect for demos and testing
+
+### 🏢 For Production/Enterprise
+
+Use the **comprehensive production setup** for enterprise environments:
+
+```bash
+./scripts/setup-secrets.sh
+```
+
+**Production Features:**
+- 🔒 **Manual secret control** - full security oversight
+- 🎛️ **Custom registries** - configure any container registry
+- 🔐 **SSH key support** - private repository access
+- 📋 **Compliance ready** - meets enterprise security requirements
+
+## Setup Process
+
+### Demo Setup (2 minutes)
+1. Run `./scripts/demo-setup.sh`
+2. Follow the generated `DEMO-SETUP-INSTRUCTIONS.md`
+3. Add webhook to your repository
+4. Push code and watch automatic deployment!
+
+### Production Setup (10 minutes)
+1. Run `./scripts/setup-secrets.sh`
+2. Follow detailed prompts for security configuration
+3. Configure enterprise-specific requirements
+4. Test and validate in staging environment
 
 ## Architecture
 
@@ -56,14 +69,18 @@ Developer → Source Repo → CI/CD → Container Registry → GitOps Repo → A
 ## File Structure
 
 ```
-├── .github/workflows/          # GitHub Actions
+├── scripts/
+│   ├── demo-setup.sh              # 🎯 DEMO: Automated setup
+│   └── setup-secrets.sh           # 🏢 PRODUCTION: Manual setup
+├── .github/workflows/             # GitHub Actions
 │   └── build-and-deploy.yml   
-├── .gitlab-ci.yml             # GitLab CI configuration
-├── Dockerfile                 # Container build instructions
+├── .gitlab-ci.yml                 # GitLab CI configuration
+├── Dockerfile                     # Container build instructions
 ├── docs/
-│   └── ci-cd-integration.md   # Detailed setup guide
-├── main.py                    # Your Streamlit application
-└── requirements.txt           # Python dependencies
+│   ├── ci-cd-integration.md       # Technical setup guide
+│   └── secrets-management.md      # Comprehensive secrets guide
+├── main.py                        # Your Streamlit application
+└── requirements.txt               # Python dependencies
 ```
 
 ## Key Features
@@ -74,16 +91,28 @@ Developer → Source Repo → CI/CD → Container Registry → GitOps Repo → A
 - 🔒 **Secure**: Uses platform-native authentication
 - 🎯 **GitOps Best Practices**: Infrastructure as Code
 
+## Which Setup Should I Use?
+
+| Use Case        | Script             | Time   | Features                                   |
+| --------------- | ------------------ | ------ | ------------------------------------------ |
+| **Demo/PoC**    | `demo-setup.sh`    | 2 min  | Auto-generated secrets, platform defaults  |
+| **Development** | `demo-setup.sh`    | 2 min  | Quick testing, rapid iteration             |
+| **Staging**     | `setup-secrets.sh` | 10 min | Production-like environment                |
+| **Production**  | `setup-secrets.sh` | 10 min | Full security control, enterprise features |
+
 ## Next Steps
 
-1. **Read the Documentation**: See [`docs/ci-cd-integration.md`](./docs/ci-cd-integration.md) for complete setup instructions
-2. **Customize Your App**: Modify `main.py` and other application files
-3. **Add Dependencies**: Update `requirements.txt` as needed
-4. **Monitor Deployments**: Use ArgoCD UI to track application status
+1. **Choose your setup**: Demo for quick start, Production for enterprise
+2. **Run the appropriate script**: Follow the prompts
+3. **Configure webhook**: Add to your Git repository
+4. **Test the pipeline**: Push a change and watch it deploy
+5. **Monitor deployments**: Use ArgoCD UI to track application status
 
 ## Support
 
-- 📖 **Documentation**: [`docs/ci-cd-integration.md`](./docs/ci-cd-integration.md)
+- 📖 **Demo Guide**: Run `./scripts/demo-setup.sh` for automated instructions
+- 📖 **Production Guide**: [`docs/ci-cd-integration.md`](./docs/ci-cd-integration.md)
+- 🔐 **Secrets Guide**: [`docs/secrets-management.md`](./docs/secrets-management.md)
 - 🐛 **Issues**: Check troubleshooting section in the docs
 - 💬 **Help**: Contact your platform team
 
