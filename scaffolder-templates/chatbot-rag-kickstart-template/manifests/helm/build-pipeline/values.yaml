@@ -1,0 +1,41 @@
+global:
+  appName: "rag-chatbot"
+
+pipeline:
+  name: "rag-build-pipeline"
+  serviceAccount: "pipeline-sa"
+
+  sourceRepo:
+    url: ""
+    branch: "main"
+
+  gitopsRepo:
+    url: ""
+    branch: "main"
+    helmPath: "helm/rag"
+
+  image:
+    name: "rag-ui"
+    registry: "image-registry.openshift-image-registry.svc:5000"
+    tag: "latest"
+
+  namespace: "default"
+
+  triggers:
+    enabled: true
+    github:
+      secretName: "github-webhook-secret"
+    gitlab:
+      secretName: "gitlab-webhook-secret"
+
+buildConfig:
+  enabled: true
+  strategy: "Docker"
+  dockerfilePath: "Dockerfile"
+
+webhook:
+  enabled: true
+  github:
+    enabled: false
+  gitlab:
+    enabled: true

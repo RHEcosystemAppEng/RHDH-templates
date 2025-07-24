@@ -1,0 +1,46 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: "/certs"
+  CONTAINER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+
+services:
+  - docker:24.0.5-dind
+
+before_script:
+  - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+
+build:
+  stage: build
+  image: docker:24.0.5
+  script:
+    - docker build -t $CONTAINER_IMAGE .
+    - docker push $CONTAINER_IMAGE
+    - docker tag $CONTAINER_IMAGE $CI_REGISTRY_IMAGE:latest
+    - docker push $CI_REGISTRY_IMAGE:latest
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+trigger-gitops:
+  stage: deploy
+  image: curlimages/curl:latest
+  script:
+    - |
+      curl -X POST "$GITOPS_WEBHOOK_URL" \
+        -H "Content-Type: application/json" \
+        -H "X-Gitlab-Event: Push Hook" \
+        -d "{
+          \"repository\": {
+            \"git_http_url\": \"$CI_PROJECT_URL.git\"
+          },
+          \"after\": \"$CI_COMMIT_SHA\"
+        }"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+  variables:
+    GITOPS_WEBHOOK_URL: $GITOPS_WEBHOOK_URL
