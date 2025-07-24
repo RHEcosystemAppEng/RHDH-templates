@@ -1,0 +1,60 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ${{ values.name }}-rag-build
+  namespace: janus-argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: ${{ values.name }}-bootstrap
+  source:
+    repoURL: ${{values.repoURL}}
+    targetRevision: HEAD
+    path: ./helm/build-pipeline
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: pipeline.sourceRepo.url
+          value: "https://${{ values.githubServer if values.hostType === 'GitHub' else values.gitlabServer }}/${{ values.repoOwner }}/${{ values.name }}.git"
+        - name: pipeline.gitopsRepo.url
+          value: "${{values.repoURL}}"
+        - name: pipeline.image.name
+          value: "${{ values.name }}-rag-ui"
+        - name: pipeline.namespace
+          value: "${{ values.namespace }}"
+        - name: global.appName
+          value: "${{ values.name }}"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ${{ values.namespace }}-build
+  ignoreDifferences:
+    - group: "*"
+      jqPathExpressions:
+        - '.imagePullSecrets[] | select(.name | contains("-dockercfg-"))'
+      kind: ServiceAccount
+    - group: "tekton.dev"
+      kind: Pipeline
+      jsonPointers:
+        - /spec/tasks
+    - group: "tekton.dev"
+      kind: PipelineRun
+      jsonPointers:
+        - /metadata/name
+        - /spec/pipelineRef
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+      - CreateNamespace=true
+    retry:
+      limit: -1
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 2m
