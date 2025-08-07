@@ -44,11 +44,16 @@ webhook:
 secrets:
   # Auto-generate webhook secrets for demo
   autoGenerate: true
-  
+
   # Git credentials (disabled for demo - uses HTTPS with tokens)
   gitCredentials:
     enabled: false
-  
+    sshPrivateKey: ""
+    knownHosts: ""
+
   # Container registry (uses platform defaults for demo)
   containerRegistry:
     enabled: false
+    server: ""
+    username: ""
+    password: ""
