@@ -1,0 +1,60 @@
+global:
+  appName: ${{ values.name }}
+  namespace: ${{ values.namespace }}
+  
+  # Model configuration
+  models:
+    ${{ values.llm }}:
+      enabled: true
+    ${{ values.safety }}:
+      enabled: ${{ values.enable_safety }}
+
+# LLaMA Stack configuration
+llama-stack:
+  enabled: true
+  mcp-servers:
+    mcp-weather:
+      uri: "http://${{ values.name }}-rag-ui-mcp-weather:8000/sse"
+  secrets: {}
+
+# LLM Service configuration  
+llm-service:
+  enabled: true
+  secret:
+    enabled: false
+  model: ${{ values.llm }}
+  tolerations:
+    - key: ${{ values.llm_toleration }}
+      operator: Exists
+      effect: NoSchedule
+
+# PGVector configuration
+pgvector:
+  enabled: true
+  database:
+    name: ragdb
+    user: raguser
+  storage:
+    size: 10Gi
+
+# Safety model configuration (optional)
+safety-model:
+  enabled: ${{ values.enable_safety }}
+  model: ${{ values.safety }}
+  tolerations:
+    - key: ${{ values.safety_toleration }}
+      operator: Exists
+      effect: NoSchedule
+
+# Ingestion pipeline configuration
+ingestion:
+  pipeline:
+    name: ${{ values.injection_pipeline_name }}
+    version: ${{ values.injection_pipeline_version }}
+  storage:
+    s3:
+      accessKeyId: ${{ values.access_key_id }}
+      secretAccessKey: ${{ values.secret_access_key }}
+      bucketName: ${{ values.bucket_name }}
+      endpointUrl: ${{ values.endpoint_url }}
+      region: ${{ values.region }}

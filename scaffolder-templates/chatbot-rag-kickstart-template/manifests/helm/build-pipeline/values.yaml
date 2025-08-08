@@ -18,6 +18,8 @@ pipeline:
     name: "rag-ui"
     registry: "image-registry.openshift-image-registry.svc:5000"
     tag: "latest"
+    # Optional: Full image name including registry (overrides name if set)
+    fullName: ""
 
   namespace: "default"
 

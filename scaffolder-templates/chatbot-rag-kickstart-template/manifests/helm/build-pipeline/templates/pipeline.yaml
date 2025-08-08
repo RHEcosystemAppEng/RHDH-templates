@@ -53,7 +53,7 @@ spec:
           workspace: shared-data
       params:
         - name: IMAGE
-          value: "{{ .Values.pipeline.image.registry }}/{{ .Values.pipeline.namespace }}/$(params.image-name):$(params.image-tag)"
+          value: "$(params.image-name):$(params.image-tag)"
         - name: DOCKERFILE
           value: "{{ .Values.buildConfig.dockerfilePath }}"
         - name: CONTEXT

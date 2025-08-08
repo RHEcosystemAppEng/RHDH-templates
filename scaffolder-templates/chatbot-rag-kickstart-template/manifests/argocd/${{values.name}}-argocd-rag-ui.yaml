@@ -4,6 +4,8 @@ kind: Application
 metadata:
   name: ${{ values.name }}-rag-ui
   namespace: janus-argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -25,7 +27,7 @@ spec:
         - name: llm-service.secret.enabled
           value: "false"
         - name: llama-stack.secrets
-          value: {}
+          value: "{}"
   destination:
     server: https://kubernetes.default.svc
     namespace: ${{ values.namespace }}

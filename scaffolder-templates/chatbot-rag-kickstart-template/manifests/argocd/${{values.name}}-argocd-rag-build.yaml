@@ -24,6 +24,8 @@ spec:
           value: "${{values.repoURL}}"
         - name: pipeline.image.name
           value: "${{ values.name }}-rag-ui"
+        - name: pipeline.image.fullName
+          value: "quay-7vqkm.apps.cluster-7vqkm.7vqkm.sandbox668.opentlc.com/quayadmin/${{ values.name }}"
         - name: pipeline.namespace
           value: "${{ values.namespace }}"
         - name: global.appName

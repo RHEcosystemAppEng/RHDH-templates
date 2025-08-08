@@ -55,7 +55,7 @@ spec:
     - name: gitops-repo-url
       value: {{ .Values.pipeline.gitopsRepo.url }}
     - name: image-name
-      value: {{ .Values.pipeline.image.name }}
+      value: {{ .Values.pipeline.image.fullName | default .Values.pipeline.image.name }}
     - name: image-tag
       value: $(body.after[0:8])
     - name: app-name
@@ -73,7 +73,7 @@ spec:
     - name: gitops-repo-url
       value: {{ .Values.pipeline.gitopsRepo.url }}
     - name: image-name
-      value: {{ .Values.pipeline.image.name }}
+      value: {{ .Values.pipeline.image.fullName | default .Values.pipeline.image.name }}
     - name: image-tag
       value: $(body.after[0:8])
     - name: app-name
