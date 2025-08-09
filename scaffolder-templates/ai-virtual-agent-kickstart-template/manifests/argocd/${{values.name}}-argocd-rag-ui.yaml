@@ -24,8 +24,9 @@ spec:
           value: "http://${{ values.name }}-mcp-weather:8000/sse"
         - name: llm-service.secret.enabled
           value: "false"
-        - name: llama-stack.secrets
-          value: {}
+      values: |
+        llama-stack:
+          secrets: {}
   destination:
     server: https://kubernetes.default.svc
     namespace: ${{ values.namespace }}

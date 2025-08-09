@@ -78,14 +78,13 @@ Set up your Hugging Face authentication:
 
 ---
 
-### 3. Register an existing component
+### 3. Register AI Templates
 
-1. **Navigate to Catalog**:
-   - From the sidebar, click **"Catalog"**
-   - Click **"Create"**
+1. **Navigate to Create**:
+   - From the Developer Hub sidebar, click **"Create"**
  
       <img src="images/dh-catalog-view.jpg" alt="Create ai-ckstart secret" width="300">
-2. **Register existing component**:
+2. **Register templates**:
    - Click **"Register Existing Component"**
 
 3. **Import the template repository**:
