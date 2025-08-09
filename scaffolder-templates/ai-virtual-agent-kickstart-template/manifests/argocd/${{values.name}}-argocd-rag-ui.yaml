@@ -24,6 +24,10 @@ spec:
           value: "http://${{ values.name }}-mcp-weather:8000/sse"
         - name: llm-service.secret.enabled
           value: "false"
+        - name: seed.admin_user.email
+          value: "admin@example.com"
+        - name: seed.admin_user.username
+          value: "admin"
       values: |
         llama-stack:
           secrets: {}

@@ -83,7 +83,7 @@ Set up your Hugging Face authentication:
 1. **Navigate to Create**:
    - From the Developer Hub sidebar, click **"Create"**
  
-      <img src="images/dh-catalog-view.jpg" alt="Create ai-ckstart secret" width="300">
+      <img src="images/dh-create-view.jpg" alt="Create ai-ckstart secret" width="300">
 2. **Register templates**:
    - Click **"Register Existing Component"**
 
