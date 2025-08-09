@@ -5,7 +5,8 @@ kind: Template
 metadata:
   name: virtual-agent-kickstart-template
   title: AI Virtual Agent using OpenShift AI, and PGVector via GitOps
-  description: This template will ask some basic information about your application and create a GitOps repository with the necessary resources to deploy the AI Virtual Agent application using OpenShift AI, and PGVector.
+  description:
+    This template will ask some basic information about your application and create a GitOps repository with the necessary resources to deploy the AI Virtual Agent application using OpenShift AI, and PGVector.
     - ai
     - virtual-agent
     - template
@@ -27,201 +28,204 @@ spec:
   # These parameters are used to generate the input form in the frontend, and are
   # used to gather input data for the execution of the template.
   parameters:
-  - title: Application Information
-    required:
-      - name
-      - owner
-    properties:
-      name:
-        title: Name
-        type: string
-        description: Unique identifier for the component
-        default: virtual-agent
-        ui:autofocus: true
-        ui:options:
-          rows: 5
-      description:
-        title: Description
-        type: string
-        description: Description of the component
-        default: AI Virtual Agent
-        maxLength: 63
-      owner:
-        title: Owner
-        type: string
-        description: Owner of the component
-        ui:field: OwnerPicker
-        default: user:user1
-        ui:options:
-          catalogFilter:
-            kind:
-              - Group
-              - User
-            readonly: false
-  - title: Application Repository Location
-    required:
-      - hostType
-      - repoOwner
-      - repoName
-      - branch
-    properties:
-      hostType:
-        title: Host Type
-        type: string
-        enum:
-          - GitHub
-          - GitLab
-        default: GitLab
-      repoOwner:
-        title: Repository Owner
-        type: string
-        default: development
-        ui:help: The organization, user or project that this repo will belong to
-      repoName:
-        title: Repository Name
-        type: string
-        default: ai-virtual-agent-app
-      branch:
-        title: Repository Default Branch
-        type: string
-        default: main
-    dependencies:
-      hostType:
-        oneOf:
-          - required:
-              - githubServer
-            properties:
-              hostType:
-                const: GitHub
-              githubServer:
-                title: Repository Server
-                type: string
-                default: github.com
-                ui:help: "You can also provide the on-prem github server, example:
-                  github-github.apps.cluster-ljg9z.sandbox219.opentlc.com"
-          - required:
-              - gitlabServer
-            properties:
-              hostType:
-                const: GitLab
-              gitlabServer:
-                title: Repository Server
-                type: string
-                default: gitlab.com
-                ui:help: "You can also provide the on-prem gitlab server, example:
-                  gitlab-gitlab.apps.cluster-ljg9z.sandbox219.opentlc.com"
-  - title: Select Language Model
-    required:
-      - llm
-    properties:
-      llm:
-        title: Model
-        type: string
-        description: choose your LLM model
-        default: llama-3-2-1b-instruct
-        enum:
-          - llama-3-2-1b-instruct
-          - llama-3-2-3b-instruct
-          - llama-3-3-70b-instruct
-      llm_toleration:
-        title: LLM Toleration
-        type: string
-        description: LLM toleration
-        default: nvidia.com/gpu
-  - title: Select Safety Model
-    properties:
-      enableSafety:
-        title: Enable Safety
-        type: boolean
-        description: Enable safety model
-        default: false
-    dependencies:
-      enableSafety:
-        allOf:
-          - if:
+    - title: Application Information
+      required:
+        - name
+        - owner
+      properties:
+        name:
+          title: Name
+          type: string
+          description: Unique identifier for the component
+          default: virtual-agent
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+        description:
+          title: Description
+          type: string
+          description: Description of the component
+          default: AI Virtual Agent
+          maxLength: 63
+        owner:
+          title: Owner
+          type: string
+          description: Owner of the component
+          ui:field: OwnerPicker
+          default: user:user1
+          ui:options:
+            catalogFilter:
+              kind:
+                - Group
+                - User
+              readonly: false
+    - title: Application Repository Location
+      required:
+        - hostType
+        - repoOwner
+        - repoName
+        - branch
+      properties:
+        hostType:
+          title: Host Type
+          type: string
+          enum:
+            - GitHub
+            - GitLab
+          default: GitLab
+        repoOwner:
+          title: Repository Owner
+          type: string
+          default: development
+          ui:help: The organization, user or project that this repo will belong to
+        repoName:
+          title: Repository Name
+          type: string
+          default: ai-virtual-agent-app
+        branch:
+          title: Repository Default Branch
+          type: string
+          default: main
+      dependencies:
+        hostType:
+          oneOf:
+            - required:
+                - githubServer
               properties:
-                enableSafety:
-                  const: true
-            then:
+                hostType:
+                  const: GitHub
+                githubServer:
+                  title: Repository Server
+                  type: string
+                  default: github.com
+                  ui:help:
+                    "You can also provide the on-prem github server, example:
+                    github-github.apps.cluster-ljg9z.sandbox219.opentlc.com"
+            - required:
+                - gitlabServer
               properties:
-                safety:
-                  title: Safety Model
+                hostType:
+                  const: GitLab
+                gitlabServer:
+                  title: Repository Server
                   type: string
-                  description: Choose your Safety model
-                  default: llama-guard-3-1b
-                  enum:
-                    - llama-guard-3-1b
-                    - llama-guard-3-8b
-                safety_toleration:
-                  title: Safety Toleration
-                  type: string
-                  description: toleration
-                  default: nvidia.com/gpu
-              required:
-                - safety
-  - title: Default Ingestion Pipeline
-    properties:
-      injection_pipeline_name:
-        title: Ingestion Pipeline Name
-        type: string
-        description: Ingestion pipeline name
-        default: vector-db
-        ui:disabled: true
-      injection_pipeline_version:
-        title: Ingestion Pipeline Version
-        type: string
-        description: Ingestion pipeline version
-        default: v1.0
-        ui:disabled: true
-      access_key_id:
-        title: Access Key ID
-        type: string
-        description: Minio access key id
-        default: minio_rag_user
-        ui:disabled: true
-      secret_access_key:
-        title: Secret Access Key
-        type: string
-        description: Minio secret access key
-        default: minio_rag_password
-        ui:disabled: true
-      bucket_name:
-        title: Bucket Name
-        type: string
-        description: Minio bucket name
-        default: documents
-        ui:disabled: true
-      endpoint_url:
-        title: Endpoint URL
-        type: string
-        description: Endpoint URL
-        default: http://minio:9000
-        ui:disabled: true
-      region:
-        title: Region
-        type: string
-        description: s3 region
-        default: us-east-1
-        ui:disabled: true
-  - title: Application Namespace
-    required:
-      - namespace
-    properties:
-      namespace:
-        title: Namespace
-        type: string
-        description: The namespace where the application will be deployed
-        default: ai-agent
-  - title: Argo CD Configuration
-    required:
-      - argoInstance
-    properties:
-      argoInstance:
-        title: Argo CD Instance Name
-        type: string
-        default: main
-        description: Enter the logical name of the Argo CD instance as configured in
-          Developer Hub (e.g., 'default')
+                  default: gitlab.com
+                  ui:help:
+                    "You can also provide the on-prem gitlab server, example:
+                    gitlab-gitlab.apps.cluster-ljg9z.sandbox219.opentlc.com"
+    - title: Select Language Model
+      required:
+        - llm
+      properties:
+        llm:
+          title: Model
+          type: string
+          description: choose your LLM model
+          default: llama-3-2-1b-instruct
+          enum:
+            - llama-3-2-1b-instruct
+            - llama-3-2-3b-instruct
+            - llama-3-3-70b-instruct
+        llm_toleration:
+          title: LLM Toleration
+          type: string
+          description: LLM toleration
+          default: nvidia.com/gpu
+    - title: Select Safety Model
+      properties:
+        enableSafety:
+          title: Enable Safety
+          type: boolean
+          description: Enable safety model
+          default: false
+      dependencies:
+        enableSafety:
+          allOf:
+            - if:
+                properties:
+                  enableSafety:
+                    const: true
+              then:
+                properties:
+                  safety:
+                    title: Safety Model
+                    type: string
+                    description: Choose your Safety model
+                    default: llama-guard-3-1b
+                    enum:
+                      - llama-guard-3-1b
+                      - llama-guard-3-8b
+                  safety_toleration:
+                    title: Safety Toleration
+                    type: string
+                    description: toleration
+                    default: nvidia.com/gpu
+                required:
+                  - safety
+    - title: Default Ingestion Pipeline
+      properties:
+        injection_pipeline_name:
+          title: Ingestion Pipeline Name
+          type: string
+          description: Ingestion pipeline name
+          default: vector-db
+          ui:disabled: true
+        injection_pipeline_version:
+          title: Ingestion Pipeline Version
+          type: string
+          description: Ingestion pipeline version
+          default: v1.0
+          ui:disabled: true
+        access_key_id:
+          title: Access Key ID
+          type: string
+          description: Minio access key id
+          default: minio_rag_user
+          ui:disabled: true
+        secret_access_key:
+          title: Secret Access Key
+          type: string
+          description: Minio secret access key
+          default: minio_rag_password
+          ui:disabled: true
+        bucket_name:
+          title: Bucket Name
+          type: string
+          description: Minio bucket name
+          default: documents
+          ui:disabled: true
+        endpoint_url:
+          title: Endpoint URL
+          type: string
+          description: Endpoint URL
+          default: http://minio:9000
+          ui:disabled: true
+        region:
+          title: Region
+          type: string
+          description: s3 region
+          default: us-east-1
+          ui:disabled: true
+    - title: Application Namespace
+      required:
+        - namespace
+      properties:
+        namespace:
+          title: Namespace
+          type: string
+          description: The namespace where the application will be deployed
+          default: ai-agent
+    - title: Argo CD Configuration
+      required:
+        - argoInstance
+      properties:
+        argoInstance:
+          title: Argo CD Instance Name
+          type: string
+          default: main
+          description:
+            Enter the logical name of the Argo CD instance as configured in
+            Developer Hub (e.g., 'default')
   steps:
     - id: fetch-all-ai-virtual-agent-kickstart
       name: Fetch ai-virtual-agent-kickstart
@@ -243,8 +247,8 @@ spec:
       name: Fetch ai-virtual-agent-kickstart Helm Chart
       action: fetch:plain
       input:
-        url: https://github.com/rh-ai-kickstart/ai-virtual-agent/tree/main/deploy
-        targetPath: ./tenant-gitops
+        url: https://github.com/rh-ai-kickstart/ai-virtual-agent/tree/main/helm
+        targetPath: ./tenant-gitops/helm
         copyWithoutTemplating:
           - "**/*.jinja"
           - "**/*.jinja2"
@@ -268,7 +272,7 @@ spec:
       action: fetch:template
       input:
         url: ./manifests/helm/templates
-        targetPath: ./tenant-gitops/helm/ai-virtual-assistant/templates
+        targetPath: ./tenant-gitops/helm/templates
         copyWithoutTemplating:
           - "**/*.jinja"
           - "**/*.jinja2"
@@ -285,7 +289,8 @@ spec:
           name: ${{ parameters.name }}
           namespace: ${{ parameters.namespace }}
           description: This is GitOps manifest for ${{ parameters.name }}
-          repoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub'
+          repoURL:
+            https://${{ parameters.githubServer if parameters.hostType === 'GitHub'
             else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{
             parameters.repoName }}-gitops.git
           owner: ${{ parameters.owner }}
@@ -365,7 +370,8 @@ spec:
       name: Register
       action: catalog:register
       input:
-        repoContentsUrl: ${{ steps['publish-github-gitops'].output.repoContentsUrl if
+        repoContentsUrl:
+          ${{ steps['publish-github-gitops'].output.repoContentsUrl if
           steps['publish-github-gitops'].output else
           steps['publish-gitlab-gitops'].output.repoContentsUrl }}
         catalogInfoPath: /catalog-info.yaml
@@ -376,7 +382,8 @@ spec:
         appName: ${{ parameters.name }}-bootstrap
         argoInstance: ${{ parameters.argoInstance }}
         namespace: janus-argocd
-        repoUrl: https://${{ parameters.githubServer if parameters.hostType === 'GitHub'
+        repoUrl:
+          https://${{ parameters.githubServer if parameters.hostType === 'GitHub'
           else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{
           parameters.repoName }}-gitops.git
         path: argocd/
