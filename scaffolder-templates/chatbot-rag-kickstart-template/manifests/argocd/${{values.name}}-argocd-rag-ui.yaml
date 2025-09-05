@@ -26,6 +26,8 @@ spec:
           value: "http://${{ values.name }}-rag-ui-mcp-weather:8000/sse"
         - name: llm-service.secret.enabled
           value: "false"
+        - name: ingestion-pipeline.enableSigning
+          value: "${{ values.enable_db_signing }}"
       values: |
         llama-stack:
           secrets: {}
