@@ -155,6 +155,11 @@ spec:
                   - safety
     - title: Default Ingestion Pipeline
       properties:
+        signDatabase:
+          title: Enable Embeddings Database Signing
+          type: boolean
+          description: Enable embeddings database signing
+          default: false
         injection_pipeline_name:
           title: Ingestion Pipeline Name
           type: string
@@ -297,6 +302,7 @@ spec:
           endpoint_url: ${{ parameters.endpoint_url }}
           region: ${{ parameters.region }}
           enable_safety: ${{ parameters.enableSafety }}
+          enable_db_signing: ${{ parameters.signDatabase }}
           # enbableGPUSupport: ${{ parameters.enbableGPUSupport }}
           # createGPU: ${{ parameters.createGPU }}
     - id: fetch-build-pipeline
