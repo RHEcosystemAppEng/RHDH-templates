@@ -1,7 +1,5 @@
 site_name: ${{values.name | dump}}
 site_description: ${{values.description | dump}}
-repo_url: ${{values.repoURL}}
-edit_uri: edit/master/docs
 
 plugins:
   - techdocs-core
