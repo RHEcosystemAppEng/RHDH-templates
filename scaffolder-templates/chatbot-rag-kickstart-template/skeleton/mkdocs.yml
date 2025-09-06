@@ -1,9 +1,1 @@
-site_name: ${{values.name | dump}}
-site_description: ${{values.description | dump}}
-
-plugins:
-  - techdocs-core
-
-# Note for content editors, edit only the section below
-nav:
-  - Onboard a developer to RAG Chatbot Kickstart: index.md
+site_name: My Docs
