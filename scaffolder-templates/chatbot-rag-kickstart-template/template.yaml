@@ -261,15 +261,6 @@ spec:
           owner: ${{ parameters.repoOwner }}
           model: ${{ parameters.model }}
           destination: ${{ parameters.repoOwner }}/${{ parameters.name }}
-    - id: fetch-ci-cd-templates
-      name: Fetch CI/CD Templates for Source Repository
-      action: fetch:template
-      input:
-        url: ./skeleton
-        targetPath: ./tenant
-        copyWithoutTemplating:
-          - "**/*.jinja"
-          - "**/*.jinja2"
     - id: fetch-helm-template
       name: Fetch Helm Chart from local Template
       action: fetch:template
@@ -305,22 +296,6 @@ spec:
           enable_db_signing: ${{ parameters.signDatabase }}
           # enbableGPUSupport: ${{ parameters.enbableGPUSupport }}
           # createGPU: ${{ parameters.createGPU }}
-    - id: fetch-build-pipeline
-      name: Fetch Build Pipeline Helm Chart
-      action: fetch:template
-      input:
-        url: ./manifests/helm/build-pipeline
-        targetPath: ./tenant-gitops/helm/build-pipeline
-        copyWithoutTemplating:
-          - "**/*.jinja"
-          - "**/*.jinja2"
-        values:
-          name: ${{ parameters.name }}
-          namespace: ${{ parameters.namespace }}
-          githubServer: ${{ parameters.githubServer if parameters.hostType === 'GitHub' else '' }}
-          gitlabServer: ${{ parameters.gitlabServer if parameters.hostType === 'GitLab' else '' }}
-          hostType: ${{ parameters.hostType }}
-          repoOwner: ${{ parameters.repoOwner }}
     - id: publish-github
       name: Publish Rag-kickstart to Github
       action: publish:github
