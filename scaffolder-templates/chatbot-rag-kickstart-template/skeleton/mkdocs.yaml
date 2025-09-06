@@ -1,0 +1,11 @@
+site_name: ${{values.name | dump}}
+site_description: ${{values.description | dump}}
+repo_url: ${{values.repoURL}}
+edit_uri: edit/master/docs
+
+plugins:
+  - techdocs-core
+
+# Note for content editors, edit only the section below
+nav:
+  - Onboard a developer to RAG Chatbot Kickstart: index.md
