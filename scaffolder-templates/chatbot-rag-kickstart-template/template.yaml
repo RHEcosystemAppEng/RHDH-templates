@@ -26,7 +26,6 @@ spec:
     - title: Application Information
       required:
         - name
-        - owner
       properties:
         name:
           title: Name
@@ -42,16 +41,16 @@ spec:
           description: Description of the component
           default: Chatbot with built-in RAG
           maxLength: 63
-        owner:
-          title: Owner
-          type: string
-          description: Owner of the component
-          ui:field: OwnerPicker
-          default: user:user1
-          ui:options:
-            catalogFilter:
-              kind: [Group, User]
-              readonly: false
+        # owner:
+        #   title: Owner
+        #   type: string
+        #   description: Owner of the component
+        #   ui:field: OwnerPicker
+        #   default: user:user1
+        #   ui:options:
+        #     catalogFilter:
+        #       kind: [Group, User]
+        #       readonly: false
 
     - title: Application Repository Location
       required:
@@ -251,7 +250,7 @@ spec:
       action: fetch:template
       input:
         url: ./skeleton
-        targetPath: ./tenant-gitops
+        targetPath: ./tenant
         copyWithoutTemplating:
           - "**/*.jinja"
           - "**/*.jinja2"
@@ -286,7 +285,7 @@ spec:
           namespace: ${{ parameters.namespace }}
           description: This is GitOps manifest for ${{ parameters.name }}
           repoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}-gitops.git
-          owner: ${{ parameters.owner }}
+          owner: ${{ user.entity.metadata.name }}
           llm: ${{ parameters.llm }}
           llm_toleration: ${{ parameters.llm_toleration }}
           safety: ${{ parameters.safety }}
