@@ -10,7 +10,7 @@ metadata:
     backstage.io/kubernetes-id: ${{values.name}}
     janus-idp.io/tekton: ${{values.name}}
     backstage.io/source-location: url:${{values.repoURL}}
-    backstage.io/techdocs-ref: url:${{values.repoURL}}
+    backstage.io/techdocs-ref: dir:.
     gitlab.com/project-slug: ${{values.destination}}
   tags:
     - python
