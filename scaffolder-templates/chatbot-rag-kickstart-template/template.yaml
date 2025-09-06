@@ -261,6 +261,7 @@ spec:
           owner: ${{ parameters.repoOwner }}
           model: ${{ parameters.model }}
           destination: ${{ parameters.repoOwner }}/${{ parameters.name }}
+          repoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}
     - id: fetch-helm-template
       name: Fetch Helm Chart from local Template
       action: fetch:template
