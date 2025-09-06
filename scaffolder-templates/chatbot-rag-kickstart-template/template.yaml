@@ -258,7 +258,7 @@ spec:
         values:
           name: ${{ parameters.name }}
           description: Deploy RAG Chatbot using LLaMA Stack, OpenShift AI, and PGVector
-          owner: ${{ parameters.owner }}
+          owner: ${{ user.entity.metadata.name }}
           repoOwner: ${{ parameters.repoOwner }}
           model: ${{ parameters.model }}
           destination: ${{ parameters.repoOwner }}/${{ parameters.name }}
