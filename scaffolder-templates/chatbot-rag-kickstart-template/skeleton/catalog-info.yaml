@@ -19,6 +19,4 @@ spec:
   type: service
   lifecycle: production
   owner: ${{values.owner | dump}}
-  providesApis:
-    - ${{values.component_id | dump}}
 
