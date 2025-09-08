@@ -1,16 +1,28 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: ${{ (values.name + '-kickstart') | dump }}
-  namespace: default
-  description: ${{ (values.description + ' - ' + values.name) | dump }}
+  name: ${{values.name | dump}}
+  {%- if values.description %}
+  description: ${{values.description | dump}}
+  {%- endif %}
   annotations:
-    argocd/app-selector: rht-gitops.com/janus-argocd=${{values.component_id}}-bootstrap
-    backstage.io/source-location: url:https://${{values.host}}/${{values.destination}}
-    gitlab.com/project-slug: ${{ values.destination }}
-    backstage.io/techdocs-ref: url:https://${{values.host}}/${{values.destination}}
+    argocd/app-selector: rht-gitops.com/janus-argocd=${{values.name}}-bootstrap
+    backstage.io/kubernetes-id: ${{values.name}}
+    janus-idp.io/tekton: ${{values.name}}
+    backstage.io/source-location: url:${{values.repoURL}}
+    backstage.io/techdocs-ref: dir:.
+    gitlab.com/project-slug: ${{values.destination}}
+  tags:
+    - python
+    - agent
+    - LLM
+    - OpenShift AI
+    - PGVector
+    - vllm
+    - llama stack
+    - gitops
 spec:
   type: service
   lifecycle: production
-  owner: group:${{ values.owner | dump }}
+  owner: ${{values.owner | dump}}
 

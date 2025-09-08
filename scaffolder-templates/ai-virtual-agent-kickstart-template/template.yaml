@@ -31,7 +31,6 @@ spec:
     - title: Application Information
       required:
         - name
-        - owner
       properties:
         name:
           title: Name
@@ -47,18 +46,6 @@ spec:
           description: Description of the component
           default: AI Virtual Agent
           maxLength: 63
-        owner:
-          title: Owner
-          type: string
-          description: Owner of the component
-          ui:field: OwnerPicker
-          default: user:user1
-          ui:options:
-            catalogFilter:
-              kind:
-                - Group
-                - User
-              readonly: false
     - title: Application Repository Location
       required:
         - hostType
@@ -257,14 +244,15 @@ spec:
       action: fetch:template
       input:
         url: ./skeleton
-        targetPath: ./tenant-gitops
+        targetPath: ./tenant
         copyWithoutTemplating:
           - "**/*.jinja"
           - "**/*.jinja2"
         values:
           name: ${{ parameters.name }}
           description: Deploy AI Virtual Assistant Chatbot using LLaMA Stack, OpenShift AI, and PGVector
-          owner: ${{ parameters.repoOwner }}
+          owner: ${{ user.entity.metadata.name }}
+          repoOwner: ${{ parameters.repoOwner }}
           model: ${{ parameters.model }}
           destination: ${{ parameters.repoOwner }}/${{ parameters.name }}
     - id: fetch-helm-template
@@ -293,7 +281,7 @@ spec:
             https://${{ parameters.githubServer if parameters.hostType === 'GitHub'
             else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{
             parameters.repoName }}-gitops.git
-          owner: ${{ parameters.owner }}
+          owner: ${{ user.entity.metadata.name }}
           llm: ${{ parameters.llm }}
           llm_toleration: ${{ parameters.llm_toleration }}
           safety: ${{ parameters.safety }}
@@ -371,9 +359,9 @@ spec:
       action: catalog:register
       input:
         repoContentsUrl:
-          ${{ steps['publish-github-gitops'].output.repoContentsUrl if
-          steps['publish-github-gitops'].output else
-          steps['publish-gitlab-gitops'].output.repoContentsUrl }}
+          ${{ steps['publish-github'].output.repoContentsUrl if
+          steps['publish-github'].output else
+          steps['publish-gitlab'].output.repoContentsUrl }}
         catalogInfoPath: /catalog-info.yaml
     - id: create-argocd-resources
       name: Create ArgoCD Resources
