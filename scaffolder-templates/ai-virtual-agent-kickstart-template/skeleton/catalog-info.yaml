@@ -14,7 +14,7 @@ metadata:
     gitlab.com/project-slug: ${{values.destination}}
   tags:
     - python
-    - virtual agent
+    - agent
     - vllm
 spec:
   type: service
