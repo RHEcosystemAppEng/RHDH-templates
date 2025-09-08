@@ -1,0 +1,58 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ${{ values.name }}
+  namespace: janus-argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: ${{ values.name }}-bootstrap
+  source:
+    repoURL: ${{values.repoURL}}
+    targetRevision: HEAD
+    path: ./helm
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: global.models.${{ values.llm }}.enabled
+          value: "true"
+        - name: llm-service.secret.enabled
+          value: "false"
+      values: |
+        llama-stack:
+          secrets: {}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ${{ values.namespace }}
+  ignoreDifferences:
+    - group: "*"
+      jqPathExpressions:
+        - '.imagePullSecrets[] | select(.name | contains("-dockercfg-"))'
+      kind: ServiceAccount
+    - group: kubeflow.org
+      jqPathExpressions:
+        - '.spec.template.spec.containers[] | select(.name == "oauth-proxy")'
+        - '.spec.template.spec.volumes[] | select(.name | IN("trusted-ca", "oauth-config", "tls-certificates"))'
+        - '.spec.template.spec.containers[] | select(.name != "oauth-proxy").env[] | select(.name | IN("PIP_CERT", "REQUESTS_CA_BUNDLE", "SSL_CERT_FILE", "PIPELINES_SSL_SA_CERTS", "GIT_SSL_CAINFO"))'
+        - '.spec.template.spec.containers[] | select(.name != "oauth-proxy").volumeMounts[] | select(.name == "trusted-ca")'
+      kind: Notebook
+    - group: route.openshift.io
+      jsonPointers:
+        - /metadata/annotations/openshift.io~1host.generated
+        - /spec/alternateBackends
+      kind: Route
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+      - CreateNamespace=true
+    retry:
+      limit: -1
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 2m
