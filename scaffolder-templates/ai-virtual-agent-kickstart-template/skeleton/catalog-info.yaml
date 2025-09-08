@@ -14,13 +14,8 @@ metadata:
     gitlab.com/project-slug: ${{values.destination}}
   tags:
     - python
-    - agent
-    - LLM
-    - OpenShift AI
-    - PGVector
+    - virtual agent
     - vllm
-    - llama stack
-    - gitops
 spec:
   type: service
   lifecycle: production
