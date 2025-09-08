@@ -72,9 +72,10 @@ Set up your Hugging Face authentication:
 
 ---
 
-### 2. Login to the Developer Hub
+### 2. Login to Developer Hub
+   * Sign in to Developer Hub via GitLab using your GitLab credentials
 
-<img src="images/dh-dashboard.jpg" alt="Create ai-ckstart secret" width="300">
+     <img src="images/dh-dashboard.jpg" alt="Create ai-ckstart secret" width="300">
 
 ---
 
@@ -133,12 +134,11 @@ Fill in the guided form with your specifications:
 
 **Application Information:**
 - **Name**: Unique identifier for your component (e.g., `my-ai-chatbot`)
-- **Owner**: Select from available users/groups
 - **Description**: Brief description of your application
 
 **Repository Details:**
 - **Host Type**: Choose GitHub or GitLab
-- **Repository Owner**: Your organization or username
+- **Repository Owner**: Your organization name
 - **Repository Name**: Name for the source repository
 - **Namespace**: Kubernetes namespace for deployment
 
