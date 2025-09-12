@@ -33,25 +33,13 @@ spec:
           description: Unique identifier for the component
           default: chatbot-app
           ui:autofocus: true
-          ui:options:
-            rows: 5
         description:
           title: Description
           type: string
           description: Description of the component
           default: Chatbot with built-in RAG
-          maxLength: 63
-        # owner:
-        #   title: Owner
-        #   type: string
-        #   description: Owner of the component
-        #   ui:field: OwnerPicker
-        #   default: user:user1
-        #   ui:options:
-        #     catalogFilter:
-        #       kind: [Group, User]
-        #       readonly: false
-
+          ui:options:
+            rows: 5
     - title: Application Repository Location
       required:
         - hostType
