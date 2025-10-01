@@ -256,6 +256,7 @@ spec:
           owner: ${{ parameters.owner }}
           repoOwner: ${{ parameters.repoOwner }}
           model: ${{ parameters.model }}
+          hostType: ${{ parameters.hostType }}
           destination: ${{ parameters.repoOwner }}/${{ parameters.name }}
           repoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}
     - id: fetch-helm-template
