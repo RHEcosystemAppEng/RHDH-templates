@@ -288,7 +288,7 @@ spec:
           - "**/*.jinja2"
         values:
           name: ${{ parameters.name }}
-          argonamespace: {{ parameters.argonamespace }}
+          argonamespace: ${{ parameters.argonamespace }}
           namespace: ${{ parameters.namespace }}
           description: This is GitOps manifest for ${{ parameters.name }}
           repoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}-gitops.git
