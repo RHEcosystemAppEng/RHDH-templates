@@ -206,6 +206,15 @@ spec:
           type: string
           description: The namespace where the application will be deployed
           default: chatbot-app-ns
+    - title: Argo Application Namespace
+      required:
+        - argonamespace
+      properties:
+        namespace:
+          title: Argo Application Namespace
+          type: string
+          description: The namespace where argocd application is deployed
+          default: janus-argocd
     - title: Argo CD Configuration
       required:
         - argoInstance
@@ -279,6 +288,7 @@ spec:
           - "**/*.jinja2"
         values:
           name: ${{ parameters.name }}
+          argonamespace: {{ parameters.argonamespace }}
           namespace: ${{ parameters.namespace }}
           description: This is GitOps manifest for ${{ parameters.name }}
           repoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}-gitops.git
