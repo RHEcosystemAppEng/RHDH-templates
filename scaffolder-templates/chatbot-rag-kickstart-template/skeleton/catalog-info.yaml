@@ -15,7 +15,7 @@ metadata:
     github.com/project-slug: ${{values.destination}}
   {%- endif %}
   {%- if values.hostType == 'GitLab' %}
-     gitlab.com/project-slug: ${{values.destination}}
+    gitlab.com/project-slug: ${{values.destination}}
   {%- endif %}
   tags:
     - python
