@@ -210,7 +210,7 @@ spec:
       required:
         - argonamespace
       properties:
-        namespace:
+        argonamespace:
           title: Argo Application Namespace
           type: string
           description: The namespace where argocd application is deployed
