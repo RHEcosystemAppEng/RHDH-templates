@@ -372,7 +372,7 @@ spec:
       input:
         appName: ${{ parameters.name }}-bootstrap
         argoInstance: ${{ parameters.argoInstance }}
-        namespace: janus-argocd
+        namespace: ${{ parameters.argonamespace }}
         repoUrl: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}-gitops.git
         path: "argocd/"
 
