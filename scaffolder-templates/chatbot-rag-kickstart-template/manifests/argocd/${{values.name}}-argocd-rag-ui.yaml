@@ -28,6 +28,8 @@ spec:
           value: "false"
         - name: ingestion-pipeline.enableSigning
           value: "${{ values.enable_db_signing }}"
+        - name: mcp-servers.oracle-sqlcl.enabled
+          values: "false"
       values: |
         llama-stack:
           secrets: {}
