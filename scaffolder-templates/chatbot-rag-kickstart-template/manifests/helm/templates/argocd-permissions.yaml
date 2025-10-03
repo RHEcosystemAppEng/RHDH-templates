@@ -1,0 +1,58 @@
+# This file grants the Argo CD Application Controller the necessary permissions
+# to create a wide variety of resources in the ${{ values.namespace }} namespace.
+
+# 1. Define the Role with the required permissions.
+# This Role only exists within the ${{ values.namespace }} namespace.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: argocd-${{ values.name }}-permissions
+  namespace: ${{ values.namespace }}
+rules:
+- apiGroups: [""] # Core API group
+  resources: ["serviceaccounts", "secrets", "services"]
+  verbs: ["*"] # Using "*" grants all permissions (create, get, list, patch, etc.)
+- apiGroups: ["apps"]
+  resources: ["deployments", "statefulsets"]
+  verbs: ["*"]
+- apiGroups: ["batch"]
+  resources: ["cronjobs"]
+  verbs: ["*"]
+- apiGroups: ["route.openshift.io"]
+  resources: ["routes"]
+  verbs: ["*"]
+- apiGroups: ["serving.kserve.io"]
+  resources: ["servingruntimes", "inferenceservices"]
+  verbs: ["*"]
+- apiGroups: ["datasciencepipelinesapplications.opendatahub.io"]
+  resources: ["datasciencepipelinesapplications"]
+  verbs: ["*"]
+- apiGroups: ["toolhive.stacklok.dev"]
+  resources: ["mcpservers"]
+  verbs: ["*"]
+- apiGroups: ["kubeflow.org"]
+  resources: ["notebooks"]
+  verbs: ["*"]
+- apiGroups: ["external-secrets.io"]
+  resources: ["externalsecrets"]
+  verbs: ["*"]
+
+---
+
+# 2. Create the RoleBinding to link the Role to the Argo CD Service Account.
+# This binding applies within the ${{ values.namespace }} namespace.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: argocd-controller-${{ values.name }}-binding
+  namespace: ${{ values.namespace }}
+subjects:
+  # This is the Service Account for the Argo CD controller that needs the permissions.
+- kind: ServiceAccount
+  name: ${{ values.argonamespace }}-argocd-application-controller
+  namespace: ${{ values.argonamespace }} # The namespace where Argo CD itself is running
+roleRef:
+  # This links to the comprehensive Role we created above.
+  kind: Role
+  name: argocd-${{ values.name }}-permissions
+  apiGroup: rbac.authorization.k8s.io
