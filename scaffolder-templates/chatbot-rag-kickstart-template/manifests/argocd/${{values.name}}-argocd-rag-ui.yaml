@@ -23,7 +23,7 @@ spec:
         - name: global.models.${{ values.safety }}.enabled
           value: "${{ values.enable_safety }}"
         - name: llama-stack.mcp-servers.mcp-weather.uri
-          value: "http://${{ values.name }}-rag-ui-mcp-weather:8000/sse"
+          value: "http://mcp-mcp-weather-proxy:8000/sse"
         - name: llm-service.secret.enabled
           value: "false"
         - name: ingestion-pipeline.enableSigning
