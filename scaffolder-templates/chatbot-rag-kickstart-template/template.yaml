@@ -277,6 +277,10 @@ spec:
         copyWithoutTemplating:
           - "**/*.jinja"
           - "**/*.jinja2"
+        values:
+          name: ${{ parameters.name }}
+          argonamespace: ${{ parameters.argonamespace }}
+          namespace: ${{ parameters.namespace }}
     - id: fetch-argocd
       name: Fetch Argo CD Resources from Local Template
       action: fetch:template
