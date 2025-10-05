@@ -22,10 +22,6 @@ spec:
           value: "true"
         - name: global.models.${{ values.safety }}.enabled
           value: "${{ values.enable_safety }}"
-        - name: mcp-servers.mcp-weather.mcpserver.env.TAVILY_API_KEY
-          value: "your-api-key"
-        - name: llama-stack.mcp-servers.mcp-weather.uri
-          value: "http://mcp-weather-proxy.${{ values.namespace }}.svc.cluster.local:8000/sse"
         - name: llm-service.secret.enabled
           value: "false"
         - name: ingestion-pipeline.enableSigning
@@ -33,8 +29,17 @@ spec:
         - name: mcp-servers.oracle-sqlcl.enabled
           value: "false"
       values: |
+        mcp-servers:
+          weather:
+            enabled: true
+            env:
+              TAVILY_API_KEY: "<placement for your Tavily search api key>"
         llama-stack:
-          secrets: {}
+          secrets:
+            TAVILY_SEARCH_API_KEY: "<placement for your Tavily search api key>"
+          mcp-servers:
+            mcp-weather:
+              uri: "http://mcp-weather-proxy.${{ values.namespace }}.svc.cluster.local:8000/sse"
   destination:
     server: https://kubernetes.default.svc
     namespace: ${{ values.namespace }}
