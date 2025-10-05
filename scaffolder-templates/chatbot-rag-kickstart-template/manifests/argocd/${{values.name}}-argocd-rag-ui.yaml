@@ -29,11 +29,12 @@ spec:
         - name: mcp-servers.oracle-sqlcl.enabled
           value: "false"
       values: |
-        mcp-servers:
-          weather:
-            enabled: true
-            env:
-              TAVILY_API_KEY: "<placement for your Tavily search api key>"
+        global:
+          mcp-servers:
+            weather:
+              enabled: true
+              env:
+                TAVILY_API_KEY: "<placement for your Tavily search api key>"
         llama-stack:
           secrets:
             TAVILY_SEARCH_API_KEY: "<placement for your Tavily search api key>"
