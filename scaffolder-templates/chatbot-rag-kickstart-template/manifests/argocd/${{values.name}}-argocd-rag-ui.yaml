@@ -22,14 +22,8 @@ spec:
           value: "true"
         - name: global.models.${{ values.safety }}.enabled
           value: "${{ values.enable_safety }}"
-        - name: global.mcp-servers.weather.enabled  # Add this
-          value: "false"
-        - name: llama-stack.mcp-servers.mcp-weather.enabled  # Add this
-          value: "true"
-        - name: global.mcp-servers.weather.envSecrets.TAVILY_API_KEY.name
-          value: "tavily-secret"
-        - name: global.mcp-servers.weather.envSecrets.TAVILY_API_KEY.key
-          value: "TAVILY_API_KEY"
+        - name: mcp-servers.mcp-weather.mcpserver.env.TAVILY_API_KEY
+          value: "your-api-key"
         - name: llama-stack.mcp-servers.mcp-weather.uri
           value: "http://mcp-weather-proxy.${{ values.namespace }}.svc.cluster.local:8000/sse"
         - name: llm-service.secret.enabled
