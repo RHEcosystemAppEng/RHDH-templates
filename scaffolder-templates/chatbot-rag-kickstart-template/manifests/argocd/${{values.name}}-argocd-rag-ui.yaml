@@ -28,21 +28,16 @@ spec:
           value: "${{ values.enable_db_signing }}"
         - name: mcp-servers.oracle-sqlcl.enabled
           value: "false"
-      values: |
-        global:
-          mcp-servers:
-            weather:
-              env: {}
-              envSecrets:
-                TAVILY_API_KEY:
-                  name: tavily-secret
-                  key: TAVILY_API_KEY
-        llama-stack:
-          secrets: {}
-          mcp-servers:
-            weather:
-              enabled: true
-              uri: "http://mcp-weather-proxy.${{ values.namespace }}.svc.cluster.local:8000/sse"
+        - name: global.mcp-servers.weather.envSecrets.TAVILY_API_KEY.name
+          value: "tavily-secret"
+        - name: global.mcp-servers.weather.envSecrets.TAVILY_API_KEY.key
+          value: "TAVILY_API_KEY"
+        - name: llama-stack.secrets
+          value: "{}"
+        - name: llama-stack.mcp-servers.weather.enabled
+          value: "true"
+        - name: llama-stack.mcp-servers.weather.uri
+          value: "http://mcp-weather-proxy.${{ values.namespace }}.svc.cluster.local:8000/sse"
   destination:
     server: https://kubernetes.default.svc
     namespace: ${{ values.namespace }}
