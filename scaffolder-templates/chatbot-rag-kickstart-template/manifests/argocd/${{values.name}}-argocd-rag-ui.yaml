@@ -32,14 +32,16 @@ spec:
         global:
           mcp-servers:
             weather:
-              enabled: true
-              env:
-                TAVILY_API_KEY: "<placement for your Tavily search api key>"
+              env: {}
+              envSecrets:
+                TAVILY_API_KEY:
+                  name: tavily-secret
+                  key: TAVILY_API_KEY
         llama-stack:
-          secrets:
-            TAVILY_SEARCH_API_KEY: "<placement for your Tavily search api key>"
+          secrets: {}
           mcp-servers:
-            mcp-weather:
+            weather:
+              enabled: true
               uri: "http://mcp-weather-proxy.${{ values.namespace }}.svc.cluster.local:8000/sse"
   destination:
     server: https://kubernetes.default.svc
