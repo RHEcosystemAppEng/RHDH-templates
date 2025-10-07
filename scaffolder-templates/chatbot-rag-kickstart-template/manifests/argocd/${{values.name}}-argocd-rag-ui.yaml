@@ -38,6 +38,21 @@ spec:
           value: "true"
         - name: llama-stack.mcp-servers.weather.uri
           value: "http://mcp-weather-proxy.${{ values.namespace }}.svc.cluster.local:8000/sse"
+      values: |
+        llama-stack:
+          providers:
+            agents:
+              - provider_id: meta-reference
+                provider_type: inline::meta-reference
+                config:
+                  persistence_store:
+                    type: sqlite
+                    db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions/starter}/agents_store.db
+                  responses_store:
+                    type: sqlite
+                    db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions/starter}/responses_store.db
+                  default_tool_groups: ["builtin::websearch", "builtin::rag", "mcp::weather"]
+    
   destination:
     server: https://kubernetes.default.svc
     namespace: ${{ values.namespace }}
@@ -58,6 +73,12 @@ spec:
         - /metadata/annotations/openshift.io~1host.generated
         - /spec/alternateBackends
       kind: Route
+    - group: toolhive.stacklok.dev
+      jqPathExpressions:
+        - ".spec.podTemplateSpec.spec.volumes"
+      kind: MCPServer
+    - group: batch
+      kind: Job
   syncPolicy:
     automated:
       prune: true
