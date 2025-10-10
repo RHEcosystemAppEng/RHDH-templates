@@ -1,0 +1,43 @@
+# This file grants the toolhive-operator the necessary cluster-wide permissions
+# to watch for and manage MCPServer resources and their sub-resources.
+
+# 1. Define the ClusterRole with the required permissions.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: toolhive-operator-${{ values.name }}-cluster-permissions
+rules:
+  # Permission to manage the MCPServer custom resources themselves
+- apiGroups: ["toolhive.stacklok.dev"]
+  resources: ["mcpservers", "mcpservers/status"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  # Permissions to manage the Deployments and Services created by the operator
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: [""] # Core API group
+  # This rule grants permissions for core resources, including pods
+  resources: ["services", "configmaps", "pods", "serviceaccounts"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  # NEW: Add permissions for RBAC resources
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["roles", "rolebindings"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+---
+
+# 2. Create the ClusterRoleBinding to link the ClusterRole to the operator's Service Account.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: toolhive-operator-${{ values.name }}-cluster-binding
+subjects:
+  # This is the Service Account for the toolhive-operator that needs the permissions.
+- kind: ServiceAccount
+  name: toolhive-operator
+  namespace: ${{ values.namespace }} # The namespace where the operator is running
+roleRef:
+  # This links to the ClusterRole we created above.
+  kind: ClusterRole
+  name: toolhive-operator-${{ values.name }}-cluster-permissions
+  apiGroup: rbac.authorization.k8s.io

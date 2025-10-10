@@ -46,8 +46,8 @@ spec:
           description: Owner of the component
           default: user:guest
           ui:options:
-             catalogFilter:
-               kind: [Group, User]
+            catalogFilter:
+              kind: [Group, User]
     - title: Application Repository Location
       required:
         - hostType
@@ -148,6 +148,14 @@ spec:
                     default: nvidia.com/gpu
                 required:
                   - safety
+              else:
+                properties:
+                  safety:
+                    type: string
+                    default: llama-guard-3-1b
+                  safety_toleration:
+                    type: string
+                    default: nvidia.com/gpu
     - title: Default Ingestion Pipeline
       properties:
         signDatabase:

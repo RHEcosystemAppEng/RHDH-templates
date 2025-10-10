@@ -165,3 +165,9 @@ Once complete, use the provided links to:
 - Monitor GitOps deployment  
 - Access the component in the catalog
 - Review ArgoCD applications
+
+#### **Post-Deployment Steps:**
+Once your application is deployed, you'll need to make the following changes in your GitOps repository:
+1. Uncomment the Toolhive configuration to enable the service
+2. Delete the chart.lock file to allow Helm to regenerate dependencies
+3. Commit these changes to trigger the GitOps sync
