@@ -22,18 +22,32 @@ spec:
           value: "true"
         - name: global.models.${{ values.safety }}.enabled
           value: "${{ values.enable_safety }}"
+        - name: mcp-servers.mcp-servers.weather.enabled
+          value: "true"
         - name: llm-service.secret.enabled
           value: "false"
+        - name: mcp-servers.mcp-servers.weather.persistence.enabled
+          value: "true"
+        - name: mcp-servers.mcp-servers.weather.persistence.accessMode
+          value: "ReadWriteOnce"
+        - name: mcp-servers.mcp-servers.weather.persistence.size
+          value: "5Gi"
         - name: ingestion-pipeline.enableSigning
           value: "${{ values.enable_db_signing }}"
         - name: mcp-servers.oracle-sqlcl.enabled
           value: "false"
+        #if using vault, use the following
         - name: global.mcp-servers.weather.envSecrets.TAVILY_API_KEY.name
           value: "tavily-secret"
         - name: global.mcp-servers.weather.envSecrets.TAVILY_API_KEY.key
           value: "TAVILY_API_KEY"
-        - name: llama-stack.secrets
-          value: "{}"
+        #if not using vault, and external secrets are not used, use the following
+        #---Note, + add hf_token to the secrets
+        - name: global.mcp-servers.weather.env.TAVILY_API_KEY
+          value: "<TAVILY_API_KEY>"
+        - name: llama-stack.secrets.TAVILY_SEARCH_API_KEY
+          value: "tavily_api_key"
+        #--- 
         - name: llama-stack.mcp-servers.weather.enabled
           value: "true"
         - name: llama-stack.mcp-servers.weather.uri
@@ -62,11 +76,10 @@ spec:
         - /metadata/annotations/openshift.io~1host.generated
         - /spec/alternateBackends
       kind: Route
-    - group: toolhive.stacklok.dev
-      jqPathExpressions:
-        - ".spec.podTemplateSpec.spec.volumes"
-      kind: MCPServer
     - group: batch
+      jsonPointers:
+        - /spec/selector
+        - /spec/completionMode
       kind: Job
   syncPolicy:
     automated:
