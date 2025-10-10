@@ -15,12 +15,7 @@ metadata:
   tags:
     - python
     - agent
-    - LLM
-    - OpenShift AI
-    - PGVector
     - vllm
-    - llama stack
-    - gitops
 spec:
   type: service
   lifecycle: production

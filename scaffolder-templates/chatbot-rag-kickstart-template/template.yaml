@@ -33,25 +33,21 @@ spec:
           description: Unique identifier for the component
           default: chatbot-app
           ui:autofocus: true
-          ui:options:
-            rows: 5
         description:
           title: Description
           type: string
           description: Description of the component
           default: Chatbot with built-in RAG
-          maxLength: 63
-        # owner:
-        #   title: Owner
-        #   type: string
-        #   description: Owner of the component
-        #   ui:field: OwnerPicker
-        #   default: user:user1
-        #   ui:options:
-        #     catalogFilter:
-        #       kind: [Group, User]
-        #       readonly: false
-
+          ui:options:
+            rows: 5
+        owner:
+          title: Owner
+          type: string
+          description: Owner of the component
+          default: user:guest
+          ui:options:
+             catalogFilter:
+               kind: [Group, User]
     - title: Application Repository Location
       required:
         - hostType
@@ -210,6 +206,15 @@ spec:
           type: string
           description: The namespace where the application will be deployed
           default: chatbot-app-ns
+    - title: Argo Application Namespace
+      required:
+        - argonamespace
+      properties:
+        argonamespace:
+          title: Argo Application Namespace
+          type: string
+          description: The namespace where argocd application is deployed
+          default: janus-argocd
     - title: Argo CD Configuration
       required:
         - argoInstance
@@ -257,9 +262,10 @@ spec:
         values:
           name: ${{ parameters.name }}
           description: Deploy RAG Chatbot using LLaMA Stack, OpenShift AI, and PGVector
-          owner: ${{ user.entity.metadata.name }}
+          owner: ${{ parameters.owner }}
           repoOwner: ${{ parameters.repoOwner }}
           model: ${{ parameters.model }}
+          hostType: ${{ parameters.hostType }}
           destination: ${{ parameters.repoOwner }}/${{ parameters.name }}
           repoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}
     - id: fetch-helm-template
@@ -271,6 +277,10 @@ spec:
         copyWithoutTemplating:
           - "**/*.jinja"
           - "**/*.jinja2"
+        values:
+          name: ${{ parameters.name }}
+          argonamespace: ${{ parameters.argonamespace }}
+          namespace: ${{ parameters.namespace }}
     - id: fetch-argocd
       name: Fetch Argo CD Resources from Local Template
       action: fetch:template
@@ -282,10 +292,11 @@ spec:
           - "**/*.jinja2"
         values:
           name: ${{ parameters.name }}
+          argonamespace: ${{ parameters.argonamespace }}
           namespace: ${{ parameters.namespace }}
           description: This is GitOps manifest for ${{ parameters.name }}
           repoURL: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}-gitops.git
-          owner: ${{ user.entity.metadata.name }}
+          owner: ${{ parameters.owner }}
           llm: ${{ parameters.llm }}
           llm_toleration: ${{ parameters.llm_toleration }}
           safety: ${{ parameters.safety }}
@@ -365,7 +376,7 @@ spec:
       input:
         appName: ${{ parameters.name }}-bootstrap
         argoInstance: ${{ parameters.argoInstance }}
-        namespace: janus-argocd
+        namespace: ${{ parameters.argonamespace }}
         repoUrl: https://${{ parameters.githubServer if parameters.hostType === 'GitHub' else parameters.gitlabServer }}/${{ parameters.repoOwner }}/${{ parameters.repoName }}-gitops.git
         path: "argocd/"
 

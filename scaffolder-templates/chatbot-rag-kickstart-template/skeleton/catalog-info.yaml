@@ -11,7 +11,12 @@ metadata:
     janus-idp.io/tekton: ${{values.name}}
     backstage.io/source-location: url:${{values.repoURL}}
     backstage.io/techdocs-ref: dir:.
+  {%- if values.hostType == 'GitHub' %}
+    github.com/project-slug: ${{values.destination}}
+  {%- endif %}
+  {%- if values.hostType == 'GitLab' %}
     gitlab.com/project-slug: ${{values.destination}}
+  {%- endif %}
   tags:
     - python
     - rag

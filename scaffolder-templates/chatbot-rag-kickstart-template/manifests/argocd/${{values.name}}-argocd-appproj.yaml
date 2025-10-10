@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
   name: ${{values.name}}-bootstrap
-  namespace: janus-argocd
+  namespace: ${{values.argonamespace}}
   annotations:
     argocd.argoproj.io/sync-wave: "-1"
 spec:
@@ -10,7 +10,7 @@ spec:
     - group: '*'
       kind: '*'
   destinations:
-    - namespace: janus-argocd
+    - namespace: ${{values.argonamespace}}
       server: https://kubernetes.default.svc
     - namespace: '*'
       server: '*'

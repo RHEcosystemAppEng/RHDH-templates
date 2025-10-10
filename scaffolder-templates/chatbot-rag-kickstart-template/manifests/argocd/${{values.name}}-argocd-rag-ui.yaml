@@ -3,7 +3,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: ${{ values.name }}-rag-ui
-  namespace: janus-argocd
+  namespace: ${{ values.argonamespace }}
   annotations:
     argocd.argoproj.io/sync-wave: "1"
   finalizers:
@@ -22,15 +22,26 @@ spec:
           value: "true"
         - name: global.models.${{ values.safety }}.enabled
           value: "${{ values.enable_safety }}"
-        - name: llama-stack.mcp-servers.mcp-weather.uri
-          value: "http://${{ values.name }}-rag-ui-mcp-weather:8000/sse"
         - name: llm-service.secret.enabled
           value: "false"
         - name: ingestion-pipeline.enableSigning
           value: "${{ values.enable_db_signing }}"
+        - name: mcp-servers.oracle-sqlcl.enabled
+          value: "false"
+        - name: global.mcp-servers.weather.envSecrets.TAVILY_API_KEY.name
+          value: "tavily-secret"
+        - name: global.mcp-servers.weather.envSecrets.TAVILY_API_KEY.key
+          value: "TAVILY_API_KEY"
+        - name: llama-stack.secrets
+          value: "{}"
+        - name: llama-stack.mcp-servers.weather.enabled
+          value: "true"
+        - name: llama-stack.mcp-servers.weather.uri
+          value: "http://mcp-weather-proxy.${{ values.namespace }}.svc.cluster.local:8000/sse"
       values: |
         llama-stack:
           secrets: {}
+    
   destination:
     server: https://kubernetes.default.svc
     namespace: ${{ values.namespace }}
@@ -51,6 +62,12 @@ spec:
         - /metadata/annotations/openshift.io~1host.generated
         - /spec/alternateBackends
       kind: Route
+    - group: toolhive.stacklok.dev
+      jqPathExpressions:
+        - ".spec.podTemplateSpec.spec.volumes"
+      kind: MCPServer
+    - group: batch
+      kind: Job
   syncPolicy:
     automated:
       prune: true
@@ -58,6 +75,7 @@ spec:
     syncOptions:
       - ApplyOutOfSyncOnly=true
       - CreateNamespace=true
+      - ServerSideApply=true
     retry:
       limit: -1
       backoff:
