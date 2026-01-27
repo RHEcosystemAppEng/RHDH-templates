@@ -32,6 +32,8 @@ spec:
           value: "ReadWriteOnce"
         - name: mcp-servers.mcp-servers.weather.persistence.size
           value: "5Gi"
+        - name: ingestion-pipeline.defaultPipeline.enabled
+          value: "true"
         - name: ingestion-pipeline.enableSigning
           value: "${{ values.enable_db_signing }}"
         - name: mcp-servers.oracle-sqlcl.enabled
