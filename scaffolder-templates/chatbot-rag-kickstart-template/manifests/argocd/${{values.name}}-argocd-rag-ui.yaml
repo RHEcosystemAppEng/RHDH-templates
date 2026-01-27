@@ -41,17 +41,16 @@ spec:
           value: "tavily-secret"
         - name: global.mcp-servers.weather.envSecrets.TAVILY_API_KEY.key
           value: "TAVILY_API_KEY"
-        #if not using vault, and external secrets are not used, use the following
-        #---Note, + add hf_token to the secrets
-        - name: global.mcp-servers.weather.env.TAVILY_API_KEY
-          value: "<TAVILY_API_KEY>"
+        #uncomment the following if vault and external secrets are not used
+        #- name: global.mcp-servers.weather.env.TAVILY_API_KEY
+          #value: "<TAVILY_API_KEY>"
         - name: llama-stack.secrets.TAVILY_SEARCH_API_KEY
           value: "tavily_api_key"
         #--- 
         - name: llama-stack.mcp-servers.weather.enabled
           value: "true"
         - name: llama-stack.mcp-servers.weather.uri
-          value: "http://mcp-weather-proxy.${{ values.namespace }}.svc.cluster.local:8000/sse"
+          value: "http://mcp-weather.${{ values.namespace }}.svc.cluster.local:8000/sse"
       values: |
         llama-stack:
           secrets: {}
