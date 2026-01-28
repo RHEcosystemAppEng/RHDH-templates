@@ -22,16 +22,16 @@ spec:
           value: "true"
         - name: global.models.${{ values.safety }}.enabled
           value: "${{ values.enable_safety }}"
-        - name: mcp-servers.mcp-servers.weather.enabled
-          value: "true"
+        #- name: mcp-servers.mcp-servers.weather.enabled
+          #value: "true"
+        #- name: mcp-servers.mcp-servers.weather.persistence.enabled
+          #value: "true"
+        #- name: mcp-servers.mcp-servers.weather.persistence.accessMode
+          #value: "ReadWriteOnce"
+        #- name: mcp-servers.mcp-servers.weather.persistence.size
+          #value: "5Gi"
         - name: llm-service.secret.enabled
           value: "false"
-        - name: mcp-servers.mcp-servers.weather.persistence.enabled
-          value: "true"
-        - name: mcp-servers.mcp-servers.weather.persistence.accessMode
-          value: "ReadWriteOnce"
-        - name: mcp-servers.mcp-servers.weather.persistence.size
-          value: "5Gi"
         - name: ingestion-pipeline.defaultPipeline.enabled
           value: "true"
         - name: ingestion-pipeline.enableSigning
@@ -39,20 +39,20 @@ spec:
         - name: mcp-servers.oracle-sqlcl.enabled
           value: "false"
         #if using vault, use the following
-        - name: global.mcp-servers.weather.envSecrets.TAVILY_API_KEY.name
-          value: "tavily-secret"
-        - name: global.mcp-servers.weather.envSecrets.TAVILY_API_KEY.key
-          value: "TAVILY_API_KEY"
+        #- name: global.mcp-servers.weather.envSecrets.TAVILY_API_KEY.name
+          #value: "tavily-secret"
+        #- name: global.mcp-servers.weather.envSecrets.TAVILY_API_KEY.key
+          #value: "TAVILY_API_KEY"
         #uncomment the following if vault and external secrets are not used
         #- name: global.mcp-servers.weather.env.TAVILY_API_KEY
           #value: "<TAVILY_API_KEY>"
         - name: llama-stack.secrets.TAVILY_SEARCH_API_KEY
           value: "tavily_api_key"
         #--- 
-        - name: llama-stack.mcp-servers.weather.enabled
-          value: "true"
-        - name: llama-stack.mcp-servers.weather.uri
-          value: "http://mcp-weather.${{ values.namespace }}.svc.cluster.local:8000/sse"
+        #- name: llama-stack.mcp-servers.weather.enabled
+          #value: "true"
+        #- name: llama-stack.mcp-servers.weather.uri
+          #value: "http://mcp-weather.${{ values.namespace }}.svc.cluster.local:8000/sse"
       values: |
         llama-stack:
           secrets: {}
