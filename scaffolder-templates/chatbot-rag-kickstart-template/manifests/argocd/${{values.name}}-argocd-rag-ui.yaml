@@ -22,8 +22,18 @@ spec:
           value: "true"
         - name: global.models.${{ values.safety }}.enabled
           value: "${{ values.enable_safety }}"
-        #- name: mcp-servers.mcp-servers.weather.enabled
-          #value: "true"
+        - name: mcp-servers.weather.enabled
+          value: "true"
+        - name: mcp-servers.weather.deploymentMode
+          value: "deployment"
+        - name: mcp-servers.weather.image.repository
+          value: "quay.io/rh-ai-quickstart/mcp-weather"
+        - name: mcp-servers.weather.image.tag
+          value: ""
+        - name: mcp-servers.weather.transport
+          value: "sse"
+         - name: mcp-servers.weather.targetPort
+          value: "8000"
         #- name: mcp-servers.mcp-servers.weather.persistence.enabled
           #value: "true"
         #- name: mcp-servers.mcp-servers.weather.persistence.accessMode
@@ -49,10 +59,10 @@ spec:
         - name: llama-stack.secrets.TAVILY_SEARCH_API_KEY
           value: "tavily_api_key"
         #--- 
-        #- name: llama-stack.mcp-servers.weather.enabled
-          #value: "true"
-        #- name: llama-stack.mcp-servers.weather.uri
-          #value: "http://mcp-weather.${{ values.namespace }}.svc.cluster.local:8000/sse"
+        - name: llama-stack.mcp-servers.weather.enabled
+          value: "true"
+        - name: llama-stack.mcp-servers.weather.uri
+          value: "http://mcp-weather.${{ values.namespace }}.svc.cluster.local:8000/sse"
       values: |
         llama-stack:
           secrets: {}
