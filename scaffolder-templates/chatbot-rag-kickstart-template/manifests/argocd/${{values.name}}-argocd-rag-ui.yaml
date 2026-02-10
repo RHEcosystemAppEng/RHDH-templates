@@ -32,7 +32,7 @@ spec:
           value: ""
         - name: mcp-servers.weather.transport
           value: "sse"
-         - name: mcp-servers.weather.targetPort
+        - name: mcp-servers.weather.targetPort
           value: "8000"
         #- name: mcp-servers.mcp-servers.weather.persistence.enabled
           #value: "true"

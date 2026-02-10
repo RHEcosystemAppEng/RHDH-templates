@@ -107,9 +107,8 @@ spec:
           title: Model
           type: string
           description: choose your LLM model
-          default: llama-3-2-1b-instruct
+          default: llama-3-2-3b-instruct
           enum:
-            - llama-3-2-1b-instruct
             - llama-3-2-3b-instruct
             - llama-3-3-70b-instruct
         llm_toleration:
@@ -205,6 +204,45 @@ spec:
           description: s3 region
           default: us-east-1
           ui:disabled: true
+    - title: Vault Secret Configuration
+      required:
+        - vault_secret_path
+        - hf_key
+        - hf_value
+        - tavily_secret_path
+        - tavily_key
+        - tavily_value
+      properties:
+        hf_secret_path:
+          title: HF Secret Path
+          type: string
+          description: HF secret path for storing token
+          default: secrets/ai-kickstart
+        hf_key:
+          title: HF Secret key
+          type: string
+          description: HuggingFace secret key
+          default: hf_token
+        hf_value:
+          title: HF Token
+          type: string
+          description: HuggingFace API token for model access
+          ui:widget: password
+        tavily_secret_path:
+          title: Tavily Secret Path
+          type: string
+          description: Tavily secret path for storing api key
+          default: secrets/tavily
+        tavily_key:
+          title: Tavily Secret Key
+          type: string
+          description: Tavily secret key
+          default: tavily_api_key
+        tavily_value:
+          title: Tavily API Key
+          type: string
+          description: Tavily API key for web search capabilities
+          ui:widget: password
     - title: Application Namespace
       required:
         - namespace
@@ -289,6 +327,20 @@ spec:
           name: ${{ parameters.name }}
           argonamespace: ${{ parameters.argonamespace }}
           namespace: ${{ parameters.namespace }}
+    - id: create-vault-secret
+      name: create a new secret for HuggingFace
+      action: vault:add-secret
+      input:
+        path: ${{ parameters.vault_secret_path }}
+        key: ${{ parameters.hf_key }}
+        value: ${{ parameters.hf_value }}
+    - id: create-tavily-secret
+      name: create a new secret for Tavily
+      action: vault:add-secret
+      input:
+        path: ${{ parameters.tavily_secret_path }}
+        key: ${{ parameters.tavily_key }}
+        value: ${{ parameters.tavily_value }}
     - id: fetch-argocd
       name: Fetch Argo CD Resources from Local Template
       action: fetch:template
