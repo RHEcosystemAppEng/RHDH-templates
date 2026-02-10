@@ -214,26 +214,26 @@ spec:
         - tavily_key
         - tavily_value
       properties:
-        vault_secret_path:
-          title: Vault Secret Path
+        hf_secret_path:
+          title: HF Secret Path
           type: string
-          description: Vault secret path for storing token
-          default: secret/ai-kickstart
+          description: HF secret path for storing token
+          default: secrets/ai-kickstart
         hf_key:
-          title: hf secret key
+          title: HF Secret key
           type: string
           description: HuggingFace secret key
           default: hf_token
         hf_value:
-          title: HuggingFace Token
+          title: HF Token
           type: string
           description: HuggingFace API token for model access
           ui:widget: password
         tavily_secret_path:
           title: Tavily Secret Path
           type: string
-          description: Vault secret path for storing token
-          default: secret/tavily
+          description: Tavily secret path for storing api key
+          default: secrets/tavily
         tavily_key:
           title: Tavily Secret Key
           type: string
