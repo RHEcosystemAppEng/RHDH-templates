@@ -328,7 +328,20 @@ spec:
           name: ${{ parameters.name }}
           argonamespace: ${{ parameters.argonamespace }}
           namespace: ${{ parameters.namespace }}
-          
+    - id: create-vault-secret
+      name: create a new secret for HuggingFace
+      action: vault:create-secret
+      input:
+        secretPath: ${{ parameters.vault_secret_path }}
+        secretKey: ${{ parameters.hf_key }}
+        secretValue: ${{ parameters.hf_value }}
+    - id: create-tavily-secret
+      name: create a new secret for Tavily
+      action: vault:create-secret
+      input:
+        secretPath: ${{ parameters.tavily_secret_path }}
+        secretKey: ${{ parameters.tavily_key }}
+        secretValue: ${{ parameters.tavily_value }}
     - id: fetch-argocd
       name: Fetch Argo CD Resources from Local Template
       action: fetch:template
