@@ -107,9 +107,8 @@ spec:
           title: Model
           type: string
           description: choose your LLM model
-          default: llama-3-2-1b-instruct
+          default: llama-3-2-3b-instruct
           enum:
-            - llama-3-2-1b-instruct
             - llama-3-2-3b-instruct
             - llama-3-3-70b-instruct
         llm_toleration:
