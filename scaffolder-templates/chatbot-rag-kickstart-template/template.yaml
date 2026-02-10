@@ -205,6 +205,27 @@ spec:
           description: s3 region
           default: us-east-1
           ui:disabled: true
+    - title: Vault Secret Configuration
+      required:
+        - vault_secret_path
+        - vault_secret_key
+        - vault_secret_value
+      properties:
+        vault_secret_path:
+          title: Vault Secret Path
+          type: string
+          description: Vault secret path
+          default: secret/myapp
+        vault_secret_key:
+          title: Vault Secret Key
+          type: string
+          description: Vault secret key
+          default: myapp
+        vault_secret_value:
+          title: Vault Secret Value
+          type: string
+          description: Vault secret value
+          default: myapp
     - title: Application Namespace
       required:
         - namespace
