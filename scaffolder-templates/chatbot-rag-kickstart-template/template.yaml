@@ -218,7 +218,7 @@ spec:
           title: Vault Secret Path
           type: string
           description: Vault secret path for storing token
-          default: kv/secret/ai-kickstart
+          default: secret/ai-kickstart
         hf_key:
           title: hf secret key
           type: string
@@ -233,7 +233,7 @@ spec:
           title: Tavily Secret Path
           type: string
           description: Vault secret path for storing token
-          default: kvsecret/tavily
+          default: secret/tavily
         tavily_key:
           title: Tavily Secret Key
           type: string
