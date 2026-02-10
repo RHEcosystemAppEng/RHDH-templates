@@ -208,24 +208,42 @@ spec:
     - title: Vault Secret Configuration
       required:
         - vault_secret_path
-        - vault_secret_key
-        - vault_secret_value
+        - hf_key
+        - hf_value
+        - tavily_secret_path
+        - tavily_key
+        - tavily_value
       properties:
         vault_secret_path:
           title: Vault Secret Path
           type: string
-          description: Vault secret path
-          default: secret/myapp
-        vault_secret_key:
-          title: Vault Secret Key
+          description: Vault secret path for storing token
+          default: secret/ai-kickstart
+        hf_key:
+          title: hf secret key
           type: string
-          description: Vault secret key
-          default: myapp
-        vault_secret_value:
-          title: Vault Secret Value
+          description: HuggingFace secret key
+          default: hf_token
+        hf_value:
+          title: HuggingFace Token
           type: string
-          description: Vault secret value
-          default: myapp
+          description: HuggingFace API token for model access
+          ui:widget: password
+        tavily_secret_path:
+          title: Tavily Secret Path
+          type: string
+          description: Vault secret path for storing token
+          default: secret/tavily
+        tavily_key:
+          title: Tavily Secret Key
+          type: string
+          description: Tavily secret key
+          default: tavily_api_key
+        tavily_value:
+          title: Tavily API Key
+          type: string
+          description: Tavily API key for web search capabilities
+          ui:widget: password
     - title: Application Namespace
       required:
         - namespace
@@ -310,6 +328,7 @@ spec:
           name: ${{ parameters.name }}
           argonamespace: ${{ parameters.argonamespace }}
           namespace: ${{ parameters.namespace }}
+          
     - id: fetch-argocd
       name: Fetch Argo CD Resources from Local Template
       action: fetch:template
