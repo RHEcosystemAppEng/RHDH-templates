@@ -9,13 +9,17 @@ Before getting started, ensure you have the following:
 
 - **OpenShift CLI (oc)**: [Download and install](https://developers.redhat.com/learning/learn:openshift:download-and-install-red-hat-openshift-cli/resource/resources:download-and-install-oc) Openshift command-line interface
 - **Platform Access**: Access to either [TAP](https://docs.redhat.com/en/documentation/red_hat_trusted_application_pipeline/1.0/html-single/installing_red_hat_trusted_application_pipeline/index) or a running RHDH instance. Helm Chart installation available [here](https://github.com/redhat-ai-dev/ai-rhdh-installer)
--  **Hugging Face API Token**: A valid authentication token from [Hugging Face](https://huggingface.co/docs/hub/en/security-tokens)
+- **Hugging Face API Token**: A valid authentication token from [Hugging Face](https://huggingface.co/docs/hub/en/security-tokens)
+- **Tavily API Key**: A valid API key from [Tavily](https://tavily.com/) for web search capabilities
+- **Vault Scaffolder Plugin**: Must be installed before running templates (see setup below)
+
 ---
-### 🚀 Step-by-Step Instructions
 
-### 1. Vault Scaffolder Plugin Setup (Automated Secret Creation)
+## 🔧 Vault Scaffolder Plugin Setup (Required)
 
-#### What is it?
+> **⚠️ Important**: This setup must be completed before running any templates. The templates use `vault:add-secret` action to automatically create secrets in Vault.
+
+### What is it?
 The `rhdh-vault-setup.sh` script automates the installation of the Vault scaffolder plugin for Red Hat Developer Hub. This plugin enables templates to automatically create secrets in Vault during the scaffolding process using the `vault:add-secret` action.
 
 #### Why do we need it?
@@ -77,14 +81,16 @@ Without this plugin, users must manually create secrets in Vault before or after
 
 ---
 
-### 2. Login to Developer Hub
+## 🚀 Step-by-Step Instructions
+
+### 1. Login to Developer Hub
    * Sign in to Developer Hub via GitLab using your GitLab credentials
 
      <img src="images/dh-dashboard.jpg" alt="Create ai-ckstart secret" width="300">
 
 ---
 
-### 3. Register AI Templates
+### 2. Register AI Templates
 
 1. **Navigate to Create**:
    - From the Developer Hub sidebar, click **"Create"**
@@ -106,7 +112,7 @@ Without this plugin, users must manually create secrets in Vault before or after
  
       <img src="images/import-template.jpg" alt="Create ai-ckstart secret" width="300">
 ---
-### 4. Available Templates
+### 3. Available Templates
 
 Once registered, you'll see these AI-powered templates in the Catalog->Template page:
 
@@ -120,7 +126,7 @@ Once registered, you'll see these AI-powered templates in the Catalog->Template 
   Build a specialized chatbot that analyzes AI model performance metrics from Prometheus and generates human-readable summaries using LLaMA models. Ideal for AI observability and monitoring.
 
 ---
-### 5. Launch a Template
+### 4. Launch a Template
 
 Once you've registered the templates, follow these steps to deploy an AI application:
 
