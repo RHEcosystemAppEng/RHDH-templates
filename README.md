@@ -72,6 +72,70 @@ Set up your Hugging Face authentication:
 
 ---
 
+### 🔧 Vault Scaffolder Plugin Setup (Automated Secret Creation)
+
+#### What is it?
+The `rhdh-vault-setup.sh` script automates the installation of the Vault scaffolder plugin for Red Hat Developer Hub. This plugin enables templates to automatically create secrets in Vault during the scaffolding process using the `vault:add-secret` action.
+
+#### Why do we need it?
+Without this plugin, users must manually create secrets in Vault before or after running a template. With the Vault scaffolder plugin enabled:
+- Templates can **automatically create secrets** in Vault during component creation
+- Users can input sensitive values (API keys, tokens) directly in the scaffolder form
+- Secrets are securely stored in Vault without manual intervention
+- Enables end-to-end automation of application deployment with secrets management
+
+#### How to run it
+
+1. **Prerequisites**:
+   - OpenShift CLI (`oc`) installed and logged into your cluster
+   - Vault deployed in the cluster
+   - Access to your RHDH GitOps repository
+
+2. **Run the setup script**:
+   ```bash
+   # Clone this repository
+   git clone https://github.com/RHEcosystemAppEng/RHDH-templates.git
+   cd RHDH-templates
+
+   # Run the setup script
+   ./scripts/rhdh-vault-setup.sh --gitops-repo <YOUR_GITOPS_REPO_URL>
+   ```
+
+3. **Options**:
+   | Option | Description | Default |
+   |--------|-------------|---------|
+   | `--gitops-repo <url>` | GitOps repository URL (required) | - |
+   | `--vault-ns <ns>` | Vault namespace | `vault` |
+   | `--backstage-ns <ns>` | Backstage namespace | `backstage` |
+   | `--plugin-version <ver>` | Vault plugin version | `0.1.14` |
+   | `--dry-run` | Preview commands without executing | - |
+
+4. **What the script does**:
+   - Creates `rhdh-vault-secrets` secret with Vault credentials
+   - Updates the GitOps repository with plugin configuration
+   - Triggers ArgoCD sync to deploy changes
+   - Verifies plugin installation
+
+5. **Available scaffolder actions after setup**:
+   - `vault:add-secret` - Create a secret in Vault
+   - `vault:get-secret` - Retrieve a secret from Vault
+   - `vault:delete-secret` - Delete a secret from Vault
+
+6. **Example template usage**:
+   ```yaml
+   - id: create-vault-secret
+     name: Create Vault Secret
+     action: vault:add-secret
+     input:
+       path: secrets/my-app
+       key: api_key
+       value: ${{ parameters.api_key }}
+   ```
+
+> **Reference**: Based on [dcurran90/rhdh vault plugin documentation](https://github.com/dcurran90/rhdh/blob/vaultPlugin/remote_testing/docs/rhtap_process.txt)
+
+---
+
 ### 2. Login to Developer Hub
    * Sign in to Developer Hub via GitLab using your GitLab credentials
 
