@@ -13,66 +13,7 @@ Before getting started, ensure you have the following:
 ---
 ### 🚀 Step-by-Step Instructions
 
-### 1. Create a Kubernetes secret for HF token
-
-
-## 🔓 Without Vault
-Set up your Hugging Face authentication:
-1. Configure your token as an environment variable:
-   ```bash
-   export HF_TOKEN=<your huggingface token>
-   ```
-   Replace <your-huggingface-token> with your actual Hugging Face API token.
-
-2. Create the secret in your OpenShift namespace:
-   ```bash
-   oc create secret generic huggingface-secret \
-     -n <your-namespace> \
-     --from-literal=HF_TOKEN=$HF_TOKEN
-   ```
-   Replace <your-namespace> with the namespace where your RAG application is deployed.
-
-
----
-
-### 🔐 With Vault + External Secrets Operator
-> **Note**: Use this approach if you have Vault and External Secrets Operator configured in your cluster for centralized secret management.
-
-1. **Access Vault UI**:
-   ```bash
-   # Get the Vault route
-   oc get route -n vault
-   
-   # Get the Vault token
-   oc get secret -n vault vault-token -o jsonpath="{.data.token}" | base64 --decode
-   ```
-   Open the Vault route in your browser and log in using the token method with the retrieved token.
-   
-   <img src="images/vaultlogin.jpg" alt="Vault Login Screen" width="300">
-
-2. **Create the secret in Vault**:
-   - Select the **KV** secret engine
-   - Navigate to: `secret/`
-   - Set path as: `secrets/ai-kickstart`
-   - Click **Create secret** (Shown on image 1)
-   - Add secret data:
-     - **Key**: `hf_token`
-     - **Value**: `<your-huggingface-token>`
-   - Click **Save** (Shown on image 2)
-  
-      (1)
-
-      <img src="images/create-secret.jpg" alt="Create ai-ckstart secret" width="300">
-      
-      (2)
-
-      <img src="images/ai-kickstart.jpg" alt="Create ai-ckstart secret" width="300">  
-      
-  > **Note**: **The ExternalSecret Operator will map `hf_token` → Kubernetes key `HF_TOKEN`**
-
----
-
-### 🔧 Vault Scaffolder Plugin Setup (Automated Secret Creation)
+### 1. Vault Scaffolder Plugin Setup (Automated Secret Creation)
 
 #### What is it?
 The `rhdh-vault-setup.sh` script automates the installation of the Vault scaffolder plugin for Red Hat Developer Hub. This plugin enables templates to automatically create secrets in Vault during the scaffolding process using the `vault:add-secret` action.
@@ -102,13 +43,13 @@ Without this plugin, users must manually create secrets in Vault before or after
    ```
 
 3. **Options**:
-   | Option | Description | Default |
-   |--------|-------------|---------|
-   | `--gitops-repo <url>` | GitOps repository URL (required) | - |
-   | `--vault-ns <ns>` | Vault namespace | `vault` |
-   | `--backstage-ns <ns>` | Backstage namespace | `backstage` |
-   | `--plugin-version <ver>` | Vault plugin version | `0.1.14` |
-   | `--dry-run` | Preview commands without executing | - |
+   | Option                   | Description                        | Default     |
+   | ------------------------ | ---------------------------------- | ----------- |
+   | `--gitops-repo <url>`    | GitOps repository URL (required)   | -           |
+   | `--vault-ns <ns>`        | Vault namespace                    | `vault`     |
+   | `--backstage-ns <ns>`    | Backstage namespace                | `backstage` |
+   | `--plugin-version <ver>` | Vault plugin version               | `0.1.14`    |
+   | `--dry-run`              | Preview commands without executing | -           |
 
 4. **What the script does**:
    - Creates `rhdh-vault-secrets` secret with Vault credentials
