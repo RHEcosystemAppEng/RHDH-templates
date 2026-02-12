@@ -8,7 +8,7 @@ This guide provides step-by-step instructions for installing the Red Hat Golden 
 Before getting started, ensure you have the following:
 
 - **OpenShift CLI (oc)**: [Download and install](https://developers.redhat.com/learning/learn:openshift:download-and-install-red-hat-openshift-cli/resource/resources:download-and-install-oc) Openshift command-line interface
-- **Platform Access**: Access to either [TAP](https://docs.redhat.com/en/documentation/red_hat_trusted_application_pipeline/1.0/html-single/installing_red_hat_trusted_application_pipeline/index) or a running RHDH instance. Helm Chart installation available [here](https://github.com/redhat-ai-dev/ai-rhdh-installer)
+- **Platform Access**: Access to a running RHDH instance with TAP. Go to [demo.redhat.com](https://demo.redhat.com) and request **TAP** (Trusted Application Pipeline) from the catalog
 - **Hugging Face API Token**: A valid authentication token from [Hugging Face](https://huggingface.co/docs/hub/en/security-tokens)
 - **Tavily API Key**: A valid API key from [Tavily](https://tavily.com/) for web search capabilities
 - **Vault Scaffolder Plugin**: Must be installed before running templates (see setup below)
