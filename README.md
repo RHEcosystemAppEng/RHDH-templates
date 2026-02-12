@@ -52,12 +52,7 @@ The templates in this repository use the `vault:add-secret` action to store secr
    - Triggers ArgoCD sync to deploy changes
    - Verifies plugin installation
 
-4. **Available scaffolder actions after setup**:
-   - `vault:add-secret` - Create a secret in Vault
-   - `vault:get-secret` - Retrieve a secret from Vault
-   - `vault:delete-secret` - Delete a secret from Vault
-
-5. **Example template usage**:
+4. **Example template usage**:
    ```yaml
    - id: create-vault-secret
      name: Create Vault Secret
