@@ -52,19 +52,6 @@ The templates in this repository use the `vault:add-secret` action to store secr
    - Triggers ArgoCD sync to deploy changes
    - Verifies plugin installation
 
-4. **Example template usage**:
-   ```yaml
-   - id: create-vault-secret
-     name: Create Vault Secret
-     action: vault:add-secret
-     input:
-       path: secrets/my-app
-       key: api_key
-       value: ${{ parameters.api_key }}
-   ```
-
-> **Reference**: Based on [dcurran90/rhdh vault plugin documentation](https://github.com/dcurran90/rhdh/blob/vaultPlugin/remote_testing/docs/rhtap_process.txt)
-
 ---
 
 ## 🚀 Step-by-Step Instructions
