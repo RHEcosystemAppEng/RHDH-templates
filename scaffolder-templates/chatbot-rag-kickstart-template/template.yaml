@@ -206,7 +206,7 @@ spec:
           ui:disabled: true
     - title: Vault Secret Configuration
       required:
-        - vault_secret_path
+        - hf_secret_path
         - hf_key
         - hf_value
         - tavily_secret_path
@@ -331,7 +331,7 @@ spec:
       name: create a new secret for HuggingFace
       action: vault:add-secret
       input:
-        path: ${{ parameters.vault_secret_path }}
+        path: ${{ parameters.hf_secret_path }}
         key: ${{ parameters.hf_key }}
         value: ${{ parameters.hf_value }}
     - id: create-tavily-secret
