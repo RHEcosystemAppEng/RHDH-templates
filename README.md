@@ -32,11 +32,15 @@ The templates in this repository use the `vault:add-secret` action to store secr
 #### How to run it
 
 1. **Prerequisites**:
-   - OpenShift CLI (`oc`) installed and logged into your cluster
+   - OpenShift CLI (`oc`) installed
    - Vault deployed in the cluster
-   - Access to your RHDH GitOps repository
 
-2. **Run the setup script**:
+2. **Login to your OpenShift cluster**:
+   ```bash
+   oc login <your-cluster-api-url>
+   ```
+
+3. **Run the setup script**:
    ```bash
    # Clone this repository
    git clone https://github.com/RHEcosystemAppEng/RHDH-templates.git
@@ -46,7 +50,7 @@ The templates in this repository use the `vault:add-secret` action to store secr
    ./scripts/rhdh-vault-setup.sh
    ```
 
-3. **What the script does**:
+4. **What the script does**:
    - Creates `rhdh-vault-secrets` secret with Vault credentials
    - Updates the GitOps repository with plugin configuration
    - Triggers ArgoCD sync to deploy changes
