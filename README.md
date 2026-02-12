@@ -36,7 +36,18 @@ The templates in this repository use the `vault:add-secret` action to store secr
    - Vault deployed in the cluster
    - Access to your RHDH GitOps repository
 
-2. **Run the setup script**:
+2. **Find your GitOps repository URL**:
+   ```bash
+   # Get the GitOps repo URL from ArgoCD
+   oc get application.argoproj.io backstage-gitops -n openshift-gitops \
+     -o jsonpath='{.spec.source.repoURL}'
+   ```
+   This will output something like:
+   ```
+   https://gitlab-gitlab.apps.cluster-xxx.xxx.example.com/gitops/janus-idp-gitops.git
+   ```
+
+3. **Run the setup script**:
    ```bash
    # Clone this repository
    git clone https://github.com/RHEcosystemAppEng/RHDH-templates.git
@@ -46,7 +57,7 @@ The templates in this repository use the `vault:add-secret` action to store secr
    ./scripts/rhdh-vault-setup.sh --gitops-repo <YOUR_GITOPS_REPO_URL>
    ```
 
-3. **Options**:
+4. **Options**:
    | Option                   | Description                        | Default     |
    | ------------------------ | ---------------------------------- | ----------- |
    | `--gitops-repo <url>`    | GitOps repository URL (required)   | -           |
@@ -55,18 +66,18 @@ The templates in this repository use the `vault:add-secret` action to store secr
    | `--plugin-version <ver>` | Vault plugin version               | `0.1.14`    |
    | `--dry-run`              | Preview commands without executing | -           |
 
-4. **What the script does**:
+5. **What the script does**:
    - Creates `rhdh-vault-secrets` secret with Vault credentials
    - Updates the GitOps repository with plugin configuration
    - Triggers ArgoCD sync to deploy changes
    - Verifies plugin installation
 
-5. **Available scaffolder actions after setup**:
+6. **Available scaffolder actions after setup**:
    - `vault:add-secret` - Create a secret in Vault
    - `vault:get-secret` - Retrieve a secret from Vault
    - `vault:delete-secret` - Delete a secret from Vault
 
-6. **Example template usage**:
+7. **Example template usage**:
    ```yaml
    - id: create-vault-secret
      name: Create Vault Secret
