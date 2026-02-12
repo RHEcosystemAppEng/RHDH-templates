@@ -23,7 +23,7 @@ Before getting started, ensure you have the following:
 The `rhdh-vault-setup.sh` script automates the installation of the Vault scaffolder plugin for Red Hat Developer Hub. This plugin enables templates to automatically create secrets in Vault during the scaffolding process using the `vault:add-secret` action.
 
 #### Why do we need it?
-Without this plugin, users must manually create secrets in Vault before or after running a template. With the Vault scaffolder plugin enabled:
+The templates in this repository use the `vault:add-secret` action to store secrets in Vault. Without this plugin installed, the templates will **fail** because the action is not available. With the Vault scaffolder plugin enabled:
 - Templates can **automatically create secrets** in Vault during component creation
 - Users can input sensitive values (API keys, tokens) directly in the scaffolder form
 - Secrets are securely stored in Vault without manual intervention
