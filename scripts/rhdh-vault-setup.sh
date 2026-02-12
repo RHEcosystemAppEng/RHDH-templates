@@ -321,7 +321,7 @@ fi
 log_info "Adding rhdhVault appConfig..."
 
 if ! grep -q "rhdhVault:" "$VALUES_FILE"; then
-    sed -i.tmp '/reading:/,/allow:/ {
+    sed -i.tmp '/reading:/,/- host:/ {
         /- host:/a\
 \
       # Vault configuration for scaffolder vault:add-secret action\
