@@ -46,27 +46,18 @@ The templates in this repository use the `vault:add-secret` action to store secr
    ./scripts/rhdh-vault-setup.sh
    ```
 
-3. **Options** (all optional):
-   | Option                   | Description                        | Default     |
-   | ------------------------ | ---------------------------------- | ----------- |
-   | `--gitops-repo <url>`    | GitOps repository URL (auto-detected if not provided) | auto |
-   | `--vault-ns <ns>`        | Vault namespace                    | `vault`     |
-   | `--backstage-ns <ns>`    | Backstage namespace                | `backstage` |
-   | `--plugin-version <ver>` | Vault plugin version               | `0.1.14`    |
-   | `--dry-run`              | Preview commands without executing | -           |
-
-4. **What the script does**:
+3. **What the script does**:
    - Creates `rhdh-vault-secrets` secret with Vault credentials
    - Updates the GitOps repository with plugin configuration
    - Triggers ArgoCD sync to deploy changes
    - Verifies plugin installation
 
-5. **Available scaffolder actions after setup**:
+4. **Available scaffolder actions after setup**:
    - `vault:add-secret` - Create a secret in Vault
    - `vault:get-secret` - Retrieve a secret from Vault
    - `vault:delete-secret` - Delete a secret from Vault
 
-6. **Example template usage**:
+5. **Example template usage**:
    ```yaml
    - id: create-vault-secret
      name: Create Vault Secret
