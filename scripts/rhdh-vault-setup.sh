@@ -16,7 +16,7 @@
 #   ./rhdh-vault-setup.sh [OPTIONS]
 #
 # OPTIONS:
-#   --gitops-repo <url>     GitOps repository URL (required)
+#   --gitops-repo <url>     GitOps repository URL (auto-detected from ArgoCD if not provided)
 #   --vault-ns <ns>         Vault namespace (default: vault)
 #   --backstage-ns <ns>     Backstage namespace (default: backstage)
 #   --plugin-version <ver>  Vault plugin version (default: 0.1.14)
@@ -134,15 +134,6 @@ while [[ $# -gt 0 ]]; do
 done
 
 # =============================================================================
-# Validation
-# =============================================================================
-
-if [ -z "$GITOPS_REPO" ]; then
-    log_error "GitOps repository URL is required. Use --gitops-repo <url>"
-    exit 1
-fi
-
-# =============================================================================
 # Step 1: Verify Prerequisites
 # =============================================================================
 
@@ -153,37 +144,55 @@ if ! command -v oc &> /dev/null; then
     log_error "OpenShift CLI (oc) is not installed"
     exit 1
 fi
-log_info "OpenShift CLI found"
 
 # Check logged in
 if ! oc whoami &> /dev/null; then
     log_error "Not logged into OpenShift. Run 'oc login' first"
     exit 1
 fi
-log_info "Logged in as: $(oc whoami)"
 
 # Check git is installed
 if ! command -v git &> /dev/null; then
     log_error "Git is not installed"
     exit 1
 fi
-log_info "Git found"
 
 # Check Vault namespace exists
 if ! oc get namespace "$VAULT_NAMESPACE" &> /dev/null; then
     log_error "Vault namespace '$VAULT_NAMESPACE' not found"
     exit 1
 fi
-log_info "Vault namespace found: $VAULT_NAMESPACE"
 
 # Check Backstage namespace exists
 if ! oc get namespace "$BACKSTAGE_NAMESPACE" &> /dev/null; then
     log_error "Backstage namespace '$BACKSTAGE_NAMESPACE' not found"
     exit 1
 fi
-log_info "Backstage namespace found: $BACKSTAGE_NAMESPACE"
 
 log_success "Prerequisites verified"
+
+# =============================================================================
+# Step 1b: Auto-detect GitOps Repository URL (if not provided)
+# =============================================================================
+
+if [ -z "$GITOPS_REPO" ]; then
+    log_info "Auto-detecting GitOps repository URL from ArgoCD..."
+    
+    GITOPS_REPO=$(oc get application.argoproj.io backstage-gitops -n openshift-gitops \
+        -o jsonpath='{.spec.source.repoURL}' 2>/dev/null) || {
+        log_error "Failed to auto-detect GitOps repository URL"
+        log_error "Could not find 'backstage-gitops' application in 'openshift-gitops' namespace"
+        log_error "Please provide the GitOps repo URL manually: --gitops-repo <url>"
+        exit 1
+    }
+    
+    if [ -z "$GITOPS_REPO" ]; then
+        log_error "GitOps repository URL is empty. Please provide it manually: --gitops-repo <url>"
+        exit 1
+    fi
+    
+    log_success "Found GitOps repository: $GITOPS_REPO"
+fi
 
 # =============================================================================
 # Step 2: Get Vault Token
